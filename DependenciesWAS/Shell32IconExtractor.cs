@@ -159,7 +159,7 @@ namespace Dependencies
 
 	public class OverlayImageToHeaderConverter : IValueConverter
 	{
-		public object Convert(object value, Type targetType, object parameter, string culture)
+		public object GetImageFile(object value, Type targetType, object parameter, string culture)
 		{
 			ModuleFlag Flags = (ModuleFlag)value;
 
@@ -188,6 +188,21 @@ namespace Dependencies
 			}
 
 			return null;
+		}
+
+		public object Convert(object value, Type targetType, object parameter, string culture)
+		{
+			string imageFile = GetImageFile(value, targetType, parameter, culture) as string;
+
+
+			if (imageFile == null)
+				return null;
+
+			BitmapImage bitmapImage = new BitmapImage();
+			Uri uri = new Uri("ms-appx:///" + imageFile);
+			bitmapImage.UriSource = uri;
+
+			return bitmapImage;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, string culture)

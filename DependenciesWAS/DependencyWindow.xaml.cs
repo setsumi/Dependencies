@@ -1104,6 +1104,10 @@ namespace Dependencies
                     childTreeNodeContext.ModuleInfo = new WeakReference(this.ProcessedModulesCache[ModuleKey]);
                     childTreeNode.DataContext = childTreeNodeContext;
                     childTreeNode.Header = childTreeNode.GetTreeNodeHeaderName(Dependencies.Properties.Settings.Default.FullPath);
+#if TODO
+#else
+                    bool hasErrors = childTreeNode.HasErrors; // Needs to be called to propagate errors to the parent node. Might not be called due to virtualization
+#endif
                     RootNode.Children.Add(childTreeNode);
                 }
 

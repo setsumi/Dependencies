@@ -9,6 +9,7 @@
 
 	<TabViewItem.Resources>
 		<local:ImageToHeaderConverter x:Key="img"/>
+		<local:OverlayImageToHeaderConverter x:Key="img_overlay"/>
 	</TabViewItem.Resources>
 
 	<Grid x:Name="ResizeElemGrid" Margin="0,0,0,0">
@@ -46,24 +47,19 @@
 								<!--System icon for the current module-->
 								<Image Grid.Column="0" Width="16" Height="16" Margin="0,0,0,0" 
                                                Source="{x:Bind Path=ModuleFilePath, Converter={StaticResource img} }">
-									<!--="{Binding Path=(local:ModuleTreeViewItem.Tooltip), RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TreeViewItem,Mode=FindAncestor}}"-->
-                                        </Image>
-								<!--<Image Grid.Column="0" Width="16" Height="16" Margin="0,0,0,0" 
-                                               Source="{Binding Path=(local:ModuleTreeViewItem.ModuleFilePath), RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TreeViewItem,Mode=FindAncestor}, Converter={StaticResource img} }"
-                                               ToolTip="{Binding Path=(local:ModuleTreeViewItem.Tooltip), RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TreeViewItem,Mode=FindAncestor}}"
-                                        ></Image>
--->
+                                </Image>
+						
 								<!--Overlay for additional flags (delay import, apiset, etc.)-->
-								<!--<Image Grid.Column="0" Width="16" Height="16" Margin="4,0,0,0" Source="{Binding Path=(local:ModuleTreeViewItem.Flags), RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TreeViewItem,Mode=FindAncestor}, Converter={StaticResource img_overlay} }"></Image>
--->
+								<Image Grid.Column="0" Width="16" Height="16" Margin="4,0,0,0" Source="{x:Bind Path=Flags, Converter={StaticResource img_overlay} }"></Image>
+
 								<!--Another red rectangle overlay on modules issues-->
-								<!--<Rectangle x:Name="ErrorModule"  Grid.Column="0" Width="14" Height="14" 
-                                                   Visibility="{Binding Path=(local:ModuleTreeViewItem.HasErrors), RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TreeViewItem,Mode=FindAncestor}, Converter={StaticResource BooleanToVisibility}}"
+								<Rectangle x:Name="ErrorModule"  Grid.Column="0" Width="14" Height="14" 
+                                                   Visibility="{x:Bind HasErrors, Mode=OneWay}" Opacity="0.2"
                                                    >
 									<Rectangle.Fill>
-										<SolidColorBrush Color="Red" />
+										<SolidColorBrush Color="Red"/>
 									</Rectangle.Fill>
-									<Rectangle.OpacityMask>
+									<!--<Rectangle.OpacityMask>
 										<DrawingBrush AlignmentX="Left" AlignmentY="Top">
 											<DrawingBrush.Drawing>
 												<DrawingGroup>
@@ -75,17 +71,17 @@
 												</DrawingGroup>
 											</DrawingBrush.Drawing>
 										</DrawingBrush>
-									</Rectangle.OpacityMask>
-								</Rectangle>-->
+									</Rectangle.OpacityMask>-->
+								</Rectangle>
 
 								<!--Another red rectangle overlay on modules issues-->
-								<!--<Rectangle x:Name="ChildErrorModule"  Grid.Column="0" Width="14" Height="14" 
-                                                   Visibility="{Binding Path=(local:ModuleTreeViewItem.HasChildErrors), RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TreeViewItem,Mode=FindAncestor}, Converter={StaticResource BooleanToVisibility}}"
+								<Rectangle x:Name="ChildErrorModule"  Grid.Column="0" Width="14" Height="14" 
+                                                   Visibility="{x:Bind HasChildErrors, Mode=OneWay}" Opacity="0.3"
                                                    >
 									<Rectangle.Fill>
 										<SolidColorBrush Color="DarkOrange" />
 									</Rectangle.Fill>
-									<Rectangle.OpacityMask>
+									<!--<Rectangle.OpacityMask>
 										<DrawingBrush AlignmentX="Left" AlignmentY="Top">
 											<DrawingBrush.Drawing>
 												<DrawingGroup>
@@ -97,8 +93,8 @@
 												</DrawingGroup>
 											</DrawingBrush.Drawing>
 										</DrawingBrush>
-									</Rectangle.OpacityMask>
-								</Rectangle>-->
+									</Rectangle.OpacityMask>-->
+								</Rectangle>
 
 								<TextBlock Grid.Column="2" Text="{x:Bind Header, Mode=OneWay}"></TextBlock>
 							</Grid>

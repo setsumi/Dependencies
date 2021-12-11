@@ -1146,7 +1146,6 @@ namespace Dependencies
 
             ConstructDependencyTree(NeedDummyPeNode, Filepath);
         }
-
         #endregion TreeConstruction
 
         public RelayCommand DoFindModuleInTree
@@ -1177,7 +1176,14 @@ namespace Dependencies
                 });
             }
         }
-    }
+
+		private void TreeViewItem_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+		{
+            TreeViewItem item = sender as TreeViewItem;
+            if (item != null)
+                item.IsExpanded = !item.IsExpanded;
+		}
+	}
     
 }
 

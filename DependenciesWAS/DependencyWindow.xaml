@@ -37,10 +37,11 @@
 				<TreeView.Resources>
 					<Thickness x:Key="TreeViewItemPresenterMargin">4,0</Thickness>
 					<Thickness x:Key="TreeViewItemPresenterPadding">0,0,0,0</Thickness>
+					<x:Double x:Key="TreeViewItemMinHeight">20</x:Double>
 				</TreeView.Resources>
 				<TreeView.ItemTemplate>
 					<DataTemplate x:DataType="local:ModuleTreeViewItem">
-						<TreeViewItem>
+						<TreeViewItem DoubleTapped="TreeViewItem_DoubleTapped">
 							<Grid Margin="0,0,5,0">
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="24"/>
@@ -101,7 +102,7 @@
 									</Rectangle.OpacityMask>-->
 								</Rectangle>
 
-								<TextBlock Grid.Column="2" Text="{x:Bind Header, Mode=OneWay}"></TextBlock>
+								<TextBlock Grid.Column="2" Text="{x:Bind Header, Mode=OneWay}" FontSize="12"></TextBlock>
 							</Grid>
 						</TreeViewItem>
 					</DataTemplate>

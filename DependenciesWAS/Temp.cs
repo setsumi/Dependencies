@@ -60,6 +60,8 @@ namespace Dependencies.Properties.Settings
         static public bool Undecorate = false;
         static public bool BinaryCacheOptionValue = true;
         static public EventHandler<PropertyChangedEventArgs> PropertyChanged;
+        static public string TreeBuildBehaviour = "ChildOnly";
+        public static int TreeDepth = 2;
     }
 
 }

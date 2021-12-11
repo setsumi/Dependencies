@@ -7,6 +7,8 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Microsoft.Win32;
+using Mono.Cecil;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -47,6 +49,67 @@ namespace Dependencies
 		// module flag attributes
 		public ModuleFlag Flags;
 	}
+
+
+    /// <summary>
+    /// Dependency tree building behaviour.
+    /// A full recursive dependency tree can be memory intensive, therefore the
+    /// choice is left to the user to override the default behaviour.
+    /// </summary>
+    public class TreeBuildingBehaviour : IValueConverter
+    {
+        public enum DependencyTreeBehaviour
+        {
+            ChildOnly,
+            RecursiveOnlyOnDirectImports,
+            Recursive,
+
+        }
+
+        public static DependencyTreeBehaviour GetGlobalBehaviour()
+        {
+            return (DependencyTreeBehaviour)(new TreeBuildingBehaviour()).Convert(
+                Dependencies.Properties.Settings.Default.TreeBuildBehaviour,
+                null,// targetType
+                null,// parameter
+                null // System.Globalization.CultureInfo
+            );
+        }
+
+        #region TreeBuildingBehaviour.IValueConverter_contract
+        public object Convert(object value, Type targetType, object parameter, string culture)
+        {
+            string StrBehaviour = (string)value;
+
+            switch (StrBehaviour)
+            {
+                default:
+                case "ChildOnly":
+                    return DependencyTreeBehaviour.ChildOnly;
+                case "RecursiveOnlyOnDirectImports":
+                    return DependencyTreeBehaviour.RecursiveOnlyOnDirectImports;
+                case "Recursive":
+                    return DependencyTreeBehaviour.Recursive;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string culture)
+        {
+            DependencyTreeBehaviour Behaviour = (DependencyTreeBehaviour)value;
+
+            switch (Behaviour)
+            {
+                default:
+                case DependencyTreeBehaviour.ChildOnly:
+                    return "ChildOnly";
+                case DependencyTreeBehaviour.RecursiveOnlyOnDirectImports:
+                    return "RecursiveOnlyOnDirectImports";
+                case DependencyTreeBehaviour.Recursive:
+                    return "Recursive";
+            }
+        }
+        #endregion TreeBuildingBehaviour.IValueConverter_contract
+    }
 
 
     /// <summary>
@@ -142,8 +205,6 @@ namespace Dependencies
         public DependencyNodeContext DataContext;
 
         private object _Header;
-
-
 
         public ModuleTreeViewItem()
         {
@@ -537,17 +598,554 @@ namespace Dependencies
 
             treeNode.DataContext = childTreeInfoContext;
             treeNode.Header = treeNode.GetTreeNodeHeaderName(Dependencies.Properties.Settings.Default.FullPath);
-            //treeNode.IsExpanded = true;
+            treeNode.IsExpanded = true;
 
-            /*TreeViewNode node = new TreeViewNode();
-            node.IsExpanded = true;
-            node.Content = treeNode;*/
             this.DllTreeView.RootNodes.Clear();
             this.DllTreeView.RootNodes.Add(treeNode);
 
-            /*
             // Recursively construct tree of dll imports
-            ConstructDependencyTree(treeNode, this.Pe);*/
+            ConstructDependencyTree(treeNode, this.Pe);
         }
-    }
+
+        #region TreeConstruction
+
+        private ImportContext ResolveImport(PeImportDll DllImport)
+        {
+            ImportContext ImportModule = new ImportContext();
+
+            ImportModule.PeFilePath = null;
+            ImportModule.PeProperties = null;
+            ImportModule.ModuleName = DllImport.Name;
+            ImportModule.ApiSetModuleName = null;
+            ImportModule.Flags = 0;
+            if (DllImport.IsDelayLoad())
+            {
+                ImportModule.Flags |= ModuleFlag.DelayLoad;
+            }
+
+            Tuple<ModuleSearchStrategy, PE> ResolvedModule = BinaryCache.ResolveModule(
+                    this.Pe,
+                    DllImport.Name,
+                    this.SxsEntriesCache,
+                    this.CustomSearchFolders,
+                    this.WorkingDirectory
+                );
+
+            ImportModule.ModuleLocation = ResolvedModule.Item1;
+            if (ImportModule.ModuleLocation != ModuleSearchStrategy.NOT_FOUND)
+            {
+                ImportModule.PeProperties = ResolvedModule.Item2;
+
+                if (ResolvedModule.Item2 != null)
+                {
+                    ImportModule.PeFilePath = ResolvedModule.Item2.Filepath;
+                    foreach (var Import in BinaryCache.LookupImports(DllImport, ImportModule.PeFilePath))
+                    {
+                        if (!Import.Item2)
+                        {
+                            ImportModule.Flags |= ModuleFlag.MissingImports;
+                            break;
+                        }
+
+                    }
+                }
+            }
+            else
+            {
+                ImportModule.Flags |= ModuleFlag.NotFound;
+            }
+
+            // special case for apiset schema
+            ImportModule.IsApiSet = (ImportModule.ModuleLocation == ModuleSearchStrategy.ApiSetSchema);
+            if (ImportModule.IsApiSet)
+            {
+                ImportModule.Flags |= ModuleFlag.ApiSet;
+                ImportModule.ApiSetModuleName = BinaryCache.LookupApiSetLibrary(DllImport.Name);
+
+                if (DllImport.Name.StartsWith("ext-"))
+                {
+                    ImportModule.Flags |= ModuleFlag.ApiSetExt;
+                }
+            }
+
+            return ImportModule;
+        }
+
+        private void TriggerWarningOnAppvIsvImports(string DllImportName)
+        {
+            if (String.Compare(DllImportName, "AppvIsvSubsystems32.dll", StringComparison.OrdinalIgnoreCase) == 0 ||
+                    String.Compare(DllImportName, "AppvIsvSubsystems64.dll", StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                if (!this._DisplayWarning)
+                {
+#if TODO
+                    MessageBoxResult result = MessageBox.Show(
+                    "This binary use the App-V containerization technology which fiddle with search directories and PATH env in ways Dependencies can't handle.\n\nFollowing results are probably not quite exact.",
+                    "App-V ISV disclaimer"
+                    );
+#endif
+                    this._DisplayWarning = true; // prevent the same warning window to popup several times
+                }
+
+            }
+        }
+
+        private void ProcessAppInitDlls(Dictionary<string, ImportContext> NewTreeContexts, PE AnalyzedPe, ImportContext ImportModule)
+        {
+            List<PeImportDll> PeImports = AnalyzedPe.GetImports();
+
+            // only user32 triggers appinit dlls
+            string User32Filepath = Path.Combine(FindPe.GetSystemPath(this.Pe), "user32.dll");
+            if (ImportModule.PeFilePath != User32Filepath)
+            {
+                return;
+            }
+
+            string AppInitRegistryKey =
+                (this.Pe.IsArm32Dll()) ?
+                "SOFTWARE\\WowAA32Node\\Microsoft\\Windows NT\\CurrentVersion\\Windows" :
+                (this.Pe.IsWow64Dll()) ?
+                "SOFTWARE\\Wow6432Node\\Microsoft\\Windows NT\\CurrentVersion\\Windows" :
+                "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Windows";
+
+            // Opening registry values
+            RegistryKey localKey = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
+            localKey = localKey.OpenSubKey(AppInitRegistryKey);
+            int LoadAppInitDlls = (int)localKey.GetValue("LoadAppInit_DLLs", 0);
+            string AppInitDlls = (string)localKey.GetValue("AppInit_DLLs", "");
+            if (LoadAppInitDlls == 0 || String.IsNullOrEmpty(AppInitDlls))
+            {
+                return;
+            }
+
+            // Extremely crude parser. TODO : Add support for quotes wrapped paths with spaces
+            foreach (var AppInitDll in AppInitDlls.Split(' '))
+            {
+                Debug.WriteLine("AppInit loading " + AppInitDll);
+
+                // Do not process twice the same imported module
+                if (null != PeImports.Find(module => module.Name == AppInitDll))
+                {
+                    continue;
+                }
+
+                if (NewTreeContexts.ContainsKey(AppInitDll))
+                {
+                    continue;
+                }
+
+                ImportContext AppInitImportModule = new ImportContext();
+                AppInitImportModule.PeFilePath = null;
+                AppInitImportModule.PeProperties = null;
+                AppInitImportModule.ModuleName = AppInitDll;
+                AppInitImportModule.ApiSetModuleName = null;
+                AppInitImportModule.Flags = 0;
+                AppInitImportModule.ModuleLocation = ModuleSearchStrategy.AppInitDLL;
+
+
+
+                Tuple<ModuleSearchStrategy, PE> ResolvedAppInitModule = BinaryCache.ResolveModule(
+                    this.Pe,
+                    AppInitDll,
+                    this.SxsEntriesCache,
+                    this.CustomSearchFolders,
+                    this.WorkingDirectory
+                );
+                if (ResolvedAppInitModule.Item1 != ModuleSearchStrategy.NOT_FOUND)
+                {
+                    AppInitImportModule.PeProperties = ResolvedAppInitModule.Item2;
+                    AppInitImportModule.PeFilePath = ResolvedAppInitModule.Item2.Filepath;
+                }
+                else
+                {
+                    AppInitImportModule.Flags |= ModuleFlag.NotFound;
+                }
+
+                NewTreeContexts.Add(AppInitDll, AppInitImportModule);
+            }
+        }
+
+        private void ProcessClrImports(Dictionary<string, ImportContext> NewTreeContexts, PE AnalyzedPe, ImportContext ImportModule)
+        {
+            List<PeImportDll> PeImports = AnalyzedPe.GetImports();
+
+            // only mscorre triggers clr parsing
+            string User32Filepath = Path.Combine(FindPe.GetSystemPath(this.Pe), "mscoree.dll");
+            if (ImportModule.PeFilePath != User32Filepath)
+            {
+                return;
+            }
+
+            var resolver = new DefaultAssemblyResolver();
+            resolver.AddSearchDirectory(RootFolder);
+
+            // Parse it via cecil
+            AssemblyDefinition PeAssembly = null;
+            try
+            {
+                PeAssembly = AssemblyDefinition.ReadAssembly(AnalyzedPe.Filepath);
+            }
+            catch (BadImageFormatException)
+            {
+#if TODO
+                MessageBoxResult result = MessageBox.Show(
+                        String.Format("Cecil could not correctly parse {0:s}, which can happens on .NET Core executables. CLR imports will be not shown", AnalyzedPe.Filepath),
+                        "CLR parsing fail"
+                );
+#endif
+                return;
+            }
+
+            foreach (var module in PeAssembly.Modules)
+            {
+                // Process CLR referenced assemblies
+                foreach (var assembly in module.AssemblyReferences)
+                {
+                    AssemblyDefinition definition;
+                    try
+                    {
+                        definition = resolver.Resolve(assembly);
+                    }
+                    catch (AssemblyResolutionException)
+                    {
+                        ImportContext AppInitImportModule = new ImportContext();
+                        AppInitImportModule.PeFilePath = null;
+                        AppInitImportModule.PeProperties = null;
+                        AppInitImportModule.ModuleName = Path.GetFileName(assembly.Name);
+                        AppInitImportModule.ApiSetModuleName = null;
+                        AppInitImportModule.Flags = ModuleFlag.ClrReference;
+                        AppInitImportModule.ModuleLocation = ModuleSearchStrategy.ClrAssembly;
+                        AppInitImportModule.Flags |= ModuleFlag.NotFound;
+
+                        if (!NewTreeContexts.ContainsKey(AppInitImportModule.ModuleName))
+                        {
+                            NewTreeContexts.Add(AppInitImportModule.ModuleName, AppInitImportModule);
+                        }
+
+                        continue;
+                    }
+
+                    foreach (var AssemblyModule in definition.Modules)
+                    {
+                        Debug.WriteLine("Referenced Assembling loading " + AssemblyModule.Name + " : " + AssemblyModule.FileName);
+
+                        // Do not process twice the same imported module
+                        if (null != PeImports.Find(mod => mod.Name == Path.GetFileName(AssemblyModule.FileName)))
+                        {
+                            continue;
+                        }
+
+                        ImportContext AppInitImportModule = new ImportContext();
+                        AppInitImportModule.PeFilePath = null;
+                        AppInitImportModule.PeProperties = null;
+                        AppInitImportModule.ModuleName = Path.GetFileName(AssemblyModule.FileName);
+                        AppInitImportModule.ApiSetModuleName = null;
+                        AppInitImportModule.Flags = ModuleFlag.ClrReference;
+                        AppInitImportModule.ModuleLocation = ModuleSearchStrategy.ClrAssembly;
+
+                        Tuple<ModuleSearchStrategy, PE> ResolvedAppInitModule = BinaryCache.ResolveModule(
+                            this.Pe,
+                            AssemblyModule.FileName,
+                            this.SxsEntriesCache,
+                            this.CustomSearchFolders,
+                            this.WorkingDirectory
+                        );
+                        if (ResolvedAppInitModule.Item1 != ModuleSearchStrategy.NOT_FOUND)
+                        {
+                            AppInitImportModule.PeProperties = ResolvedAppInitModule.Item2;
+                            AppInitImportModule.PeFilePath = ResolvedAppInitModule.Item2.Filepath;
+                        }
+                        else
+                        {
+                            AppInitImportModule.Flags |= ModuleFlag.NotFound;
+                        }
+
+                        if (!NewTreeContexts.ContainsKey(AppInitImportModule.ModuleName))
+                        {
+                            NewTreeContexts.Add(AppInitImportModule.ModuleName, AppInitImportModule);
+                        }
+                    }
+
+                }
+
+                // Process unmanaged dlls for native calls
+                foreach (var UnmanagedModule in module.ModuleReferences)
+                {
+                    // some clr dll have a reference to an "empty" dll
+                    if (UnmanagedModule.Name.Length == 0)
+                    {
+                        continue;
+                    }
+
+                    Debug.WriteLine("Referenced module loading " + UnmanagedModule.Name);
+
+                    // Do not process twice the same imported module
+                    if (null != PeImports.Find(m => m.Name == UnmanagedModule.Name))
+                    {
+                        continue;
+                    }
+
+
+
+                    ImportContext AppInitImportModule = new ImportContext();
+                    AppInitImportModule.PeFilePath = null;
+                    AppInitImportModule.PeProperties = null;
+                    AppInitImportModule.ModuleName = UnmanagedModule.Name;
+                    AppInitImportModule.ApiSetModuleName = null;
+                    AppInitImportModule.Flags = ModuleFlag.ClrReference;
+                    AppInitImportModule.ModuleLocation = ModuleSearchStrategy.ClrAssembly;
+
+                    Tuple<ModuleSearchStrategy, PE> ResolvedAppInitModule = BinaryCache.ResolveModule(
+                        this.Pe,
+                        UnmanagedModule.Name,
+                        this.SxsEntriesCache,
+                        this.CustomSearchFolders,
+                        this.WorkingDirectory
+                    );
+                    if (ResolvedAppInitModule.Item1 != ModuleSearchStrategy.NOT_FOUND)
+                    {
+                        AppInitImportModule.PeProperties = ResolvedAppInitModule.Item2;
+                        AppInitImportModule.PeFilePath = ResolvedAppInitModule.Item2.Filepath;
+                    }
+
+                    if (!NewTreeContexts.ContainsKey(AppInitImportModule.ModuleName))
+                    {
+                        NewTreeContexts.Add(AppInitImportModule.ModuleName, AppInitImportModule);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Background processing of a single PE file.
+        /// It can be lengthy since there are disk access (and misses).
+        /// </summary>
+        /// <param name="NewTreeContexts"> This variable is passed as reference to be updated since this function is run in a separate thread. </param>
+        /// <param name="newPe"> Current PE file analyzed </param>
+        private void ProcessPe(Dictionary<string, ImportContext> NewTreeContexts, PE newPe)
+        {
+            List<PeImportDll> PeImports = newPe.GetImports();
+
+            foreach (PeImportDll DllImport in PeImports)
+            {
+                // Ignore already processed imports
+                if (NewTreeContexts.ContainsKey(DllImport.Name))
+                {
+                    continue;
+                }
+
+                // Find Dll in "paths"
+                ImportContext ImportModule = ResolveImport(DllImport);
+
+                // add warning for appv isv applications 
+                TriggerWarningOnAppvIsvImports(DllImport.Name);
+
+
+                NewTreeContexts.Add(DllImport.Name, ImportModule);
+
+
+                // AppInitDlls are triggered by user32.dll, so if the binary does not import user32.dll they are not loaded.
+                ProcessAppInitDlls(NewTreeContexts, newPe, ImportModule);
+
+
+                // if mscoree.dll is imported, it means the module is a C# assembly, and we can use Mono.Cecil to enumerate its references
+                ProcessClrImports(NewTreeContexts, newPe, ImportModule);
+            }
+        }
+
+        private class BacklogImport : Tuple<ModuleTreeViewItem, string>
+        {
+            public BacklogImport(ModuleTreeViewItem Node, string Filepath)
+            : base(Node, Filepath)
+            {
+            }
+        }
+
+        private void ConstructDependencyTree(ModuleTreeViewItem RootNode, string FilePath, int RecursionLevel = 0)
+        {
+            PE CurrentPE = (Application.Current as App).LoadBinary(FilePath);
+
+            if (null == CurrentPE)
+            {
+                return;
+            }
+
+            ConstructDependencyTree(RootNode, CurrentPE, RecursionLevel);
+        }
+
+        private void ConstructDependencyTree(ModuleTreeViewItem RootNode, PE CurrentPE, int RecursionLevel = 0)
+        {
+            // "Closured" variables (it 's a scope hack really).
+            Dictionary<string, ImportContext> NewTreeContexts = new Dictionary<string, ImportContext>();
+
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.WorkerReportsProgress = true; // useless here for now
+
+
+            bw.DoWork += (sender, e) => {
+
+                ProcessPe(NewTreeContexts, CurrentPE);
+            };
+
+
+            bw.RunWorkerCompleted += (sender, e) =>
+            {
+                TreeBuildingBehaviour.DependencyTreeBehaviour SettingTreeBehaviour = Dependencies.TreeBuildingBehaviour.GetGlobalBehaviour();
+                List<ModuleTreeViewItem> PeWithDummyEntries = new List<ModuleTreeViewItem>();
+                List<BacklogImport> PEProcessingBacklog = new List<BacklogImport>();
+
+                // Important !
+                // 
+                // This handler is executed in the STA (Single Thread Application)
+                // which is authorized to manipulate UI elements. The BackgroundWorker is not.
+                //
+
+                foreach (ImportContext NewTreeContext in NewTreeContexts.Values)
+                {
+                    ModuleTreeViewItem childTreeNode = new ModuleTreeViewItem(RootNode);
+                    DependencyNodeContext childTreeNodeContext = new DependencyNodeContext();
+                    childTreeNodeContext.IsDummy = false;
+
+                    string ModuleName = NewTreeContext.ModuleName;
+                    string ModuleFilePath = NewTreeContext.PeFilePath;
+                    ModuleCacheKey ModuleKey = new ModuleCacheKey(NewTreeContext);
+
+                    // Newly seen modules
+                    if (!this.ProcessedModulesCache.ContainsKey(ModuleKey))
+                    {
+                        // Missing module "found"
+                        if ((NewTreeContext.PeFilePath == null) || !NativeFile.Exists(NewTreeContext.PeFilePath))
+                        {
+                            if (NewTreeContext.IsApiSet)
+                            {
+                                this.ProcessedModulesCache[ModuleKey] = new ApiSetNotFoundModuleInfo(ModuleName, NewTreeContext.ApiSetModuleName);
+                            }
+                            else
+                            {
+                                this.ProcessedModulesCache[ModuleKey] = new NotFoundModuleInfo(ModuleName);
+                            }
+
+                        }
+                        else
+                        {
+
+
+                            if (NewTreeContext.IsApiSet)
+                            {
+                                var ApiSetContractModule = new DisplayModuleInfo(NewTreeContext.ApiSetModuleName, NewTreeContext.PeProperties, NewTreeContext.ModuleLocation, NewTreeContext.Flags);
+                                var NewModule = new ApiSetModuleInfo(NewTreeContext.ModuleName, ref ApiSetContractModule);
+
+                                this.ProcessedModulesCache[ModuleKey] = NewModule;
+
+                                if (SettingTreeBehaviour == TreeBuildingBehaviour.DependencyTreeBehaviour.Recursive)
+                                {
+                                    PEProcessingBacklog.Add(new BacklogImport(childTreeNode, ApiSetContractModule.ModuleName));
+                                }
+                            }
+                            else
+                            {
+                                var NewModule = new DisplayModuleInfo(NewTreeContext.ModuleName, NewTreeContext.PeProperties, NewTreeContext.ModuleLocation, NewTreeContext.Flags);
+                                this.ProcessedModulesCache[ModuleKey] = NewModule;
+
+                                switch (SettingTreeBehaviour)
+                                {
+                                    case TreeBuildingBehaviour.DependencyTreeBehaviour.RecursiveOnlyOnDirectImports:
+                                        if ((NewTreeContext.Flags & ModuleFlag.DelayLoad) == 0)
+                                        {
+                                            PEProcessingBacklog.Add(new BacklogImport(childTreeNode, NewModule.ModuleName));
+                                        }
+                                        break;
+
+                                    case TreeBuildingBehaviour.DependencyTreeBehaviour.Recursive:
+                                        PEProcessingBacklog.Add(new BacklogImport(childTreeNode, NewModule.ModuleName));
+                                        break;
+                                }
+                            }
+                        }
+
+                        // add it to the module list
+#if TODO
+                        this.ModulesList.AddModule(this.ProcessedModulesCache[ModuleKey]);
+#endif
+                    }
+
+                    // Since we uniquely process PE, for thoses who have already been "seen",
+                    // we set a dummy entry in order to set the "[+]" icon next to the node.
+                    // The dll dependencies are actually resolved on user double-click action
+                    // We can't do the resolution in the same time as the tree construction since
+                    // it's asynchronous (we would have to wait for all the background to finish and
+                    // use another Async worker to resolve).
+
+                    if ((NewTreeContext.PeProperties != null) && (NewTreeContext.PeProperties.GetImports().Count > 0))
+                    {
+#if TODO
+  ModuleTreeViewItem DummyEntry = new ModuleTreeViewItem();
+                        DependencyNodeContext DummyContext = new DependencyNodeContext()
+                        {
+                            ModuleInfo = new WeakReference(new NotFoundModuleInfo("Dummy")),
+                            IsDummy = true
+                        };
+
+                        DummyEntry.DataContext = DummyContext;
+                        DummyEntry.Header = "@Dummy : if you see this header, it's a bug.";
+                        DummyEntry.IsExpanded = false;
+
+#else
+                        childTreeNode.HasUnrealizedChildren = true;
+
+#endif
+
+#if TODO
+                        childTreeNode.Expanded += ResolveDummyEntries;
+#endif
+                    }
+
+                    // Add to tree view
+                    childTreeNodeContext.ModuleInfo = new WeakReference(this.ProcessedModulesCache[ModuleKey]);
+                    childTreeNode.DataContext = childTreeNodeContext;
+                    childTreeNode.Header = childTreeNode.GetTreeNodeHeaderName(Dependencies.Properties.Settings.Default.FullPath);
+                    RootNode.Children.Add(childTreeNode);
+                }
+
+
+                // Process next batch of dll imports only if :
+                //	1. Recursive tree building has been activated
+                //  2. Recursion is not hitting the max depth level
+                bool doProcessNextLevel = (SettingTreeBehaviour != TreeBuildingBehaviour.DependencyTreeBehaviour.ChildOnly) &&
+                                          (RecursionLevel < Dependencies.Properties.Settings.Default.TreeDepth);
+
+                if (doProcessNextLevel)
+                {
+                    foreach (var ImportNode in PEProcessingBacklog)
+                    {
+                        ConstructDependencyTree(ImportNode.Item1, ImportNode.Item2, RecursionLevel + 1); // warning : recursive call
+                    }
+                }
+
+
+            };
+
+            bw.RunWorkerAsync();
+        }
+
+        /// <summary>
+        /// Resolve imports when the user expand the node.
+        /// </summary>
+        private void DllTreeView_Expanding(TreeView sender, TreeViewExpandingEventArgs args)
+		{
+            ModuleTreeViewItem NeedDummyPeNode = args.Node as ModuleTreeViewItem;
+
+            if (NeedDummyPeNode.HasUnrealizedChildren == false)
+            {
+                return;
+            }
+            string Filepath = NeedDummyPeNode.ModuleFilePath;
+
+            NeedDummyPeNode.HasUnrealizedChildren = false;
+
+            ConstructDependencyTree(NeedDummyPeNode, Filepath);
+        }
+	}
 }
+#endregion TreeConstruction
+

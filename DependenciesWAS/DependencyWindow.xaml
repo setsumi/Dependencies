@@ -27,7 +27,7 @@
 			<TreeView x:Name="DllTreeView"  
                     HorizontalContentAlignment="Stretch" 
                     VerticalContentAlignment="Stretch" 
-                    Padding="0">
+                    Padding="0" Expanding="DllTreeView_Expanding">
 				<TreeView.ItemTemplate>
 					<DataTemplate x:DataType="local:ModuleTreeViewItem">
 							<TreeViewItem Content="{x:Bind Header}"/>

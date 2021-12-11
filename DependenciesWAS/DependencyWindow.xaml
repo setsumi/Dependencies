@@ -101,16 +101,15 @@
 						</TreeViewItem>
 					</DataTemplate>
 				</TreeView.ItemTemplate>
-				
-				<!--<TreeView.ItemTemplate>
-					<DataTemplate x:DataType="local:ModuleTreeViewItem">
-						<TextBlock Text="{x:Bind Header}"/>
-					</DataTemplate>
-				</TreeView.ItemTemplate>-->
-
+			
 			</TreeView>
 
 		</Grid>
+
+		<local:DependencyModuleList x:Name="ModulesList"
+                                    Grid.Row="2"/>
+		<!--SelectedModuleChanged="OnModuleViewSelectedItemChanged"-->
+
 
 	</Grid>
 </TabViewItem>

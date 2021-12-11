@@ -580,11 +580,10 @@ namespace Dependencies
             this._DisplayWarning = false;
 
             // TODO : Find a way to properly bind commands instead of using this hack
-#if TODO
             this.ModulesList.Items.Clear();
             this.ModulesList.DoFindModuleInTreeCommand = DoFindModuleInTree;
             this.ModulesList.ConfigureSearchOrderCommand = ConfigureSearchOrderCommand;
-#endif
+
             var RootFilename = Path.GetFileName(this.Filename);
             var RootModule = new DisplayModuleInfo(RootFilename, this.Pe, ModuleSearchStrategy.ROOT);
             this.ProcessedModulesCache.Add(new ModuleCacheKey(RootFilename, this.Filename), RootModule);
@@ -607,7 +606,7 @@ namespace Dependencies
             ConstructDependencyTree(treeNode, this.Pe);
         }
 
-        #region TreeConstruction
+#region TreeConstruction
 
         private ImportContext ResolveImport(PeImportDll DllImport)
         {
@@ -1064,9 +1063,7 @@ namespace Dependencies
                         }
 
                         // add it to the module list
-#if TODO
                         this.ModulesList.AddModule(this.ProcessedModulesCache[ModuleKey]);
-#endif
                     }
 
                     // Since we uniquely process PE, for thoses who have already been "seen",
@@ -1149,7 +1146,38 @@ namespace Dependencies
 
             ConstructDependencyTree(NeedDummyPeNode, Filepath);
         }
-	}
+
+        #endregion TreeConstruction
+
+        public RelayCommand DoFindModuleInTree
+        {
+            get
+            {
+                return new RelayCommand((param) =>
+                {
+                    DisplayModuleInfo SelectedModule = (param as DisplayModuleInfo);
+                    ModuleTreeViewItem TreeRootItem = this.DllTreeView.RootNodes[0] as ModuleTreeViewItem;
+#if TODO
+                    FindModuleInTree(TreeRootItem, SelectedModule, true);
+#endif
+                });
+            }
+        }
+
+        public RelayCommand ConfigureSearchOrderCommand
+        {
+            get
+            {
+                return new RelayCommand((param) =>
+                {
+#if TODO
+                    ModuleSearchOrder modalWindow = new ModuleSearchOrder(ProcessedModulesCache);
+                    modalWindow.ShowDialog();
+#endif
+                });
+            }
+        }
+    }
+    
 }
-#endregion TreeConstruction
 

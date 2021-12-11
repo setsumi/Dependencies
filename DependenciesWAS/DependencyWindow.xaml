@@ -7,6 +7,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
+	<TabViewItem.Resources>
+		<local:ImageToHeaderConverter x:Key="img"/>
+	</TabViewItem.Resources>
+
 	<Grid x:Name="ResizeElemGrid" Margin="0,0,0,0">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="146*"/>
@@ -30,7 +34,75 @@
                     Padding="0" Expanding="DllTreeView_Expanding">
 				<TreeView.ItemTemplate>
 					<DataTemplate x:DataType="local:ModuleTreeViewItem">
-							<TreeViewItem Content="{x:Bind Header}"/>
+						<TreeViewItem>
+							<Grid Margin="0,0,5,0">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="24"/>
+									<ColumnDefinition Width="3" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
+
+
+								<!--System icon for the current module-->
+								<Image Grid.Column="0" Width="16" Height="16" Margin="0,0,0,0" 
+                                               Source="{x:Bind Path=ModuleFilePath, Converter={StaticResource img} }">
+									<!--="{Binding Path=(local:ModuleTreeViewItem.Tooltip), RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TreeViewItem,Mode=FindAncestor}}"-->
+                                        </Image>
+								<!--<Image Grid.Column="0" Width="16" Height="16" Margin="0,0,0,0" 
+                                               Source="{Binding Path=(local:ModuleTreeViewItem.ModuleFilePath), RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TreeViewItem,Mode=FindAncestor}, Converter={StaticResource img} }"
+                                               ToolTip="{Binding Path=(local:ModuleTreeViewItem.Tooltip), RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TreeViewItem,Mode=FindAncestor}}"
+                                        ></Image>
+-->
+								<!--Overlay for additional flags (delay import, apiset, etc.)-->
+								<!--<Image Grid.Column="0" Width="16" Height="16" Margin="4,0,0,0" Source="{Binding Path=(local:ModuleTreeViewItem.Flags), RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TreeViewItem,Mode=FindAncestor}, Converter={StaticResource img_overlay} }"></Image>
+-->
+								<!--Another red rectangle overlay on modules issues-->
+								<!--<Rectangle x:Name="ErrorModule"  Grid.Column="0" Width="14" Height="14" 
+                                                   Visibility="{Binding Path=(local:ModuleTreeViewItem.HasErrors), RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TreeViewItem,Mode=FindAncestor}, Converter={StaticResource BooleanToVisibility}}"
+                                                   >
+									<Rectangle.Fill>
+										<SolidColorBrush Color="Red" />
+									</Rectangle.Fill>
+									<Rectangle.OpacityMask>
+										<DrawingBrush AlignmentX="Left" AlignmentY="Top">
+											<DrawingBrush.Drawing>
+												<DrawingGroup>
+													<GeometryDrawing Brush="#33000000">
+														<GeometryDrawing.Geometry>
+															<RectangleGeometry Rect="0,0,40,40" />
+														</GeometryDrawing.Geometry>
+													</GeometryDrawing>
+												</DrawingGroup>
+											</DrawingBrush.Drawing>
+										</DrawingBrush>
+									</Rectangle.OpacityMask>
+								</Rectangle>-->
+
+								<!--Another red rectangle overlay on modules issues-->
+								<!--<Rectangle x:Name="ChildErrorModule"  Grid.Column="0" Width="14" Height="14" 
+                                                   Visibility="{Binding Path=(local:ModuleTreeViewItem.HasChildErrors), RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TreeViewItem,Mode=FindAncestor}, Converter={StaticResource BooleanToVisibility}}"
+                                                   >
+									<Rectangle.Fill>
+										<SolidColorBrush Color="DarkOrange" />
+									</Rectangle.Fill>
+									<Rectangle.OpacityMask>
+										<DrawingBrush AlignmentX="Left" AlignmentY="Top">
+											<DrawingBrush.Drawing>
+												<DrawingGroup>
+													<GeometryDrawing Brush="#88888888">
+														<GeometryDrawing.Geometry>
+															<RectangleGeometry Rect="0,0,40,40" />
+														</GeometryDrawing.Geometry>
+													</GeometryDrawing>
+												</DrawingGroup>
+											</DrawingBrush.Drawing>
+										</DrawingBrush>
+									</Rectangle.OpacityMask>
+								</Rectangle>-->
+
+								<TextBlock Grid.Column="2" Text="{x:Bind Header, Mode=OneWay}"></TextBlock>
+							</Grid>
+						</TreeViewItem>
 					</DataTemplate>
 				</TreeView.ItemTemplate>
 				

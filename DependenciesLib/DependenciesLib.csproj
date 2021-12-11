@@ -1,13 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<Platforms>x86;x64</Platforms>
-		<RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
 		<ProjectGuid>{4A459493-14FC-4C87-9254-60E0959535DA}</ProjectGuid>
 		<OutputType>Library</OutputType>
 		<AppDesignerFolder>Properties</AppDesignerFolder>
 		<RootNamespace>Dependencies</RootNamespace>
 		<AssemblyName>DependenciesLib</AssemblyName>
-		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 		<EnableDefaultItems>false</EnableDefaultItems>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<FileAlignment>512</FileAlignment>

@@ -27,7 +27,7 @@ namespace Dependencies
 		{
 			this.InitializeComponent();
 
-			var window = new DependencyWindow();
+			var window = new DependencyWindow("coreclr.dll");
 			window.Header = "Test";
 			FileTabs.TabItems.Add(window);
 		}

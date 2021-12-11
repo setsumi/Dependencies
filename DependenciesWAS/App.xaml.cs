@@ -77,7 +77,7 @@ namespace Dependencies
 #if TODO
 			BinaryCache.InitializeBinaryCache(Dependencies.BinaryCacheOption.GetGlobalBehaviour() == Dependencies.BinaryCacheOption.BinaryCacheOptionValue.Yes);
 #else
-			//BinaryCache.InitializeBinaryCache(true);
+			BinaryCache.InitializeBinaryCache(false);
 
 #endif
 

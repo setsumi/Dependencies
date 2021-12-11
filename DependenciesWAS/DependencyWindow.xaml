@@ -28,6 +28,17 @@
                     HorizontalContentAlignment="Stretch" 
                     VerticalContentAlignment="Stretch" 
                     Padding="0">
+				<TreeView.ItemTemplate>
+					<DataTemplate x:DataType="local:ModuleTreeViewItem">
+							<TreeViewItem Content="{x:Bind Header}"/>
+					</DataTemplate>
+				</TreeView.ItemTemplate>
+				
+				<!--<TreeView.ItemTemplate>
+					<DataTemplate x:DataType="local:ModuleTreeViewItem">
+						<TextBlock Text="{x:Bind Header}"/>
+					</DataTemplate>
+				</TreeView.ItemTemplate>-->
 
 			</TreeView>
 

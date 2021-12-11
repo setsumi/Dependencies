@@ -3,7 +3,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows10.0.22000.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
-    <RootNamespace>DependenciesWAS</RootNamespace>
+    <RootNamespace>Dependencies</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Platforms>x86;x64;arm64</Platforms>
     <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
@@ -12,6 +12,10 @@
     <EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
 		<WindowsPackageType>None</WindowsPackageType>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="DependencyWindow.xaml" />
+    <None Remove="MainPage.xaml" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -38,5 +42,15 @@
   <ItemGroup>
     <ProjectReference Include="..\ClrPhlib\ClrPhlib.vcxproj" />
     <ProjectReference Include="..\DependenciesLib\DependenciesLib.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="DependencyWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 </Project>

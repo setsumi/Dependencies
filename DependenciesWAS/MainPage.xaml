@@ -1,11 +1,16 @@
-﻿<Window
-    x:Class="Dependencies.MainWindow"
+﻿<Page
+    x:Class="Dependencies.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Dependencies"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<local:MainPage/>
-</Window>
+    <Grid>
+		<TabView x:Name="FileTabs">
+			
+		</TabView>
+    </Grid>
+</Page>

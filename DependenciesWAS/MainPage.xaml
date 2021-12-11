@@ -9,7 +9,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-		<TabView x:Name="FileTabs">
+		<TabView x:Name="FileTabs" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 			
 		</TabView>
     </Grid>

@@ -10,11 +10,17 @@
 	HeadersVisibility="Column"
     AutoGenerateColumns="False"
 	CanUserSortColumns="True"
+	SelectionMode="Extended"
+	IsReadOnly="True"
 	ItemsSource="{x:Bind Items}">
 
 	<toolkit:DataGrid.Resources>
 		<local:ImageToHeaderConverter x:Key="img"/>
 		<local:OverlayImageToHeaderConverter x:Key="img_overlay"/>
+		<Style TargetType="toolkit:DataGridCell">
+			<Setter Property="FontSize" Value="12"/>
+			<Setter Property="MinHeight" Value="10"/>
+		</Style>
 	</toolkit:DataGrid.Resources>
 	<toolkit:DataGrid.Columns>
 		<toolkit:DataGridTemplateColumn Header="" Width="50">

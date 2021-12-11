@@ -5,6 +5,7 @@
     xmlns:local="using:Dependencies"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:toolkit="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d">
 
 	<TabViewItem.Resources>
@@ -33,6 +34,10 @@
                     HorizontalContentAlignment="Stretch" 
                     VerticalContentAlignment="Stretch" 
                     Padding="0" Expanding="DllTreeView_Expanding">
+				<TreeView.Resources>
+					<Thickness x:Key="TreeViewItemPresenterMargin">4,0</Thickness>
+					<Thickness x:Key="TreeViewItemPresenterPadding">0,0,0,0</Thickness>
+				</TreeView.Resources>
 				<TreeView.ItemTemplate>
 					<DataTemplate x:DataType="local:ModuleTreeViewItem">
 						<TreeViewItem>
@@ -105,6 +110,9 @@
 			</TreeView>
 
 		</Grid>
+
+		<toolkit:GridSplitter Grid.Row="1"/>
+
 
 		<local:DependencyModuleList x:Name="ModulesList"
                                     Grid.Row="2"/>

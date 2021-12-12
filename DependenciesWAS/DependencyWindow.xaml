@@ -13,7 +13,7 @@
 		<local:OverlayImageToHeaderConverter x:Key="img_overlay"/>
 	</TabViewItem.Resources>
 
-	<Grid x:Name="ResizeElemGrid" Margin="0,0,0,0">
+	<Grid x:Name="ResizeElemGrid" Margin="0,0,0,0" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="146*"/>
 			<RowDefinition Height="5"/>
@@ -30,7 +30,7 @@
 				<ColumnDefinition Width="600*"/>
 			</Grid.ColumnDefinitions>
 
-			<TreeView x:Name="DllTreeView"  
+			<TreeView x:Name="DllTreeView" Margin="0,4,0,0"
                     HorizontalContentAlignment="Stretch" 
                     VerticalContentAlignment="Stretch" 
                     Padding="0" Expanding="DllTreeView_Expanding" ItemInvoked="DllTreeView_ItemInvoked">
@@ -110,7 +110,7 @@
 			
 			</TreeView>
 
-			<toolkit:GridSplitter Grid.Column="1" 
+			<toolkit:GridSplitter Grid.Column="1" MinWidth="8"
                           HorizontalContentAlignment="Stretch"
                           VerticalContentAlignment="Stretch"
                           HorizontalAlignment="Stretch"/>
@@ -144,7 +144,7 @@
 		<toolkit:GridSplitter x:Name="LogSplitter" 
                       HorizontalAlignment="Stretch" 
                       HorizontalContentAlignment="Stretch" 
-                      VerticalContentAlignment="Stretch" 
+                      VerticalContentAlignment="Stretch"  MinHeight="8" 
                       Grid.Row="1"/>
 
 

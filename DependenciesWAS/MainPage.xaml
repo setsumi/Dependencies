@@ -8,8 +8,8 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
-		<TabView x:Name="FileTabs" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+	<Grid Background="#FF5C8F88">
+		<TabView x:Name="FileTabs" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsAddTabButtonVisible="False">
 			
 		</TabView>
     </Grid>

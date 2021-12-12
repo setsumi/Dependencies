@@ -47,7 +47,6 @@ namespace Dependencies
 		public DependencyModuleList()
 		{
 			SortedItems = new Toolkit.Uwp.UI.AdvancedCollectionView(Items, true);
-			SortedItems.SortDescriptions.Add(new SortDescription("ModuleName", SortDirection.Ascending, StringComparer.Create(System.Globalization.CultureInfo.CurrentCulture, true)));
 
 			this.InitializeComponent();
 		}
@@ -58,16 +57,44 @@ namespace Dependencies
 			NewModule.DoFindModuleInTreeCommand = DoFindModuleInTreeCommand;
 			NewModule.ConfigureSearchOrderCommand = ConfigureSearchOrderCommand;
 
-
-			var t = NewModule.GetType();
-
-			var t2 = t.GetProperty("ModuleName");
-
 			Items.Add(NewModule);
 		}
 
 		public ObservableCollection<DisplayModuleInfo> Items = new ObservableCollection<DisplayModuleInfo>();
 		private Toolkit.Uwp.UI.AdvancedCollectionView SortedItems;
 
+		private void DataGrid_Sorting(object sender, DataGridColumnEventArgs e)
+		{
+			string category = e.Column.Tag as string;
+			if (category == null)
+				return;
+
+			SortDirection direction = SortDirection.Descending;
+
+			if(e.Column.SortDirection == null || e.Column.SortDirection == DataGridSortDirection.Descending)
+			{
+				direction = SortDirection.Ascending;
+				e.Column.SortDirection = DataGridSortDirection.Ascending;
+			}
+			else
+			{
+				e.Column.SortDirection = DataGridSortDirection.Descending;
+			}
+
+			using (SortedItems.DeferRefresh())
+			{
+				SortedItems.SortDescriptions.Clear();
+				SortedItems.SortDescriptions.Add(new SortDescription(category, direction));
+			}
+
+			// Remove sorting indicators from other columns
+			foreach (var dgColumn in Columns)
+			{
+				if (dgColumn.Tag != null && dgColumn.Tag.ToString() != category)
+				{
+					dgColumn.SortDirection = null;
+				}
+			}
+		}
 	}
 }

@@ -12,7 +12,7 @@
 	CanUserSortColumns="True"
 	SelectionMode="Extended"
 	IsReadOnly="True"
-	ItemsSource="{x:Bind Items}">
+	ItemsSource="{x:Bind SortedItems}">
 
 	<toolkit:DataGrid.Resources>
 		<local:ImageToHeaderConverter x:Key="img"/>

@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.WinUI.UI.Controls;
+﻿using CommunityToolkit.WinUI.UI;
+using CommunityToolkit.WinUI.UI.Controls;
+using Dependencies.Toolkit.Uwp.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -44,6 +46,9 @@ namespace Dependencies
 		
 		public DependencyModuleList()
 		{
+			SortedItems = new Toolkit.Uwp.UI.AdvancedCollectionView(Items, true);
+			SortedItems.SortDescriptions.Add(new SortDescription("ModuleName", SortDirection.Ascending, StringComparer.Create(System.Globalization.CultureInfo.CurrentCulture, true)));
+
 			this.InitializeComponent();
 		}
 
@@ -54,9 +59,15 @@ namespace Dependencies
 			NewModule.ConfigureSearchOrderCommand = ConfigureSearchOrderCommand;
 
 
+			var t = NewModule.GetType();
+
+			var t2 = t.GetProperty("ModuleName");
+
 			Items.Add(NewModule);
 		}
 
 		public ObservableCollection<DisplayModuleInfo> Items = new ObservableCollection<DisplayModuleInfo>();
+		private Toolkit.Uwp.UI.AdvancedCollectionView SortedItems;
+
 	}
 }

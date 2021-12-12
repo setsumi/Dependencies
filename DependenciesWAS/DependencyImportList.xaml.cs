@@ -21,10 +21,12 @@ using Windows.Foundation.Collections;
 
 namespace Dependencies
 {
-	public sealed partial class DependencyImportList : DataGrid
+	public sealed partial class DependencyImportList : DataGridSort
 	{
 		public DependencyImportList()
 		{
+			SortedItems = new Toolkit.Uwp.UI.AdvancedCollectionView(Items, true);
+
 			this.InitializeComponent();
 		}
 

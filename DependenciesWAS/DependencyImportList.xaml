@@ -1,4 +1,4 @@
-﻿<toolkit:DataGrid
+﻿<local:DataGridSort
     x:Class="Dependencies.DependencyImportList"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -12,28 +12,29 @@
 	CanUserSortColumns="True"
 	SelectionMode="Extended"
 	IsReadOnly="True"
-	ItemsSource="{x:Bind Items}">
+	ItemsSource="{x:Bind SortedItems}"
+	Sorting="SortDataGrid">
 
-	<toolkit:DataGrid.Resources>
+	<local:DataGridSort.Resources>
 		<local:StringFormatConverter x:Key="StringFormatConverter"/>
 		<Style TargetType="toolkit:DataGridCell">
 			<Setter Property="FontSize" Value="12"/>
 			<Setter Property="MinHeight" Value="10"/>
 		</Style>
 
-	</toolkit:DataGrid.Resources>
+	</local:DataGridSort.Resources>
 
 
 
-	<toolkit:DataGrid.Columns>
-		<toolkit:DataGridTemplateColumn Width="40" Header="PI">
+	<local:DataGridSort.Columns>
+		<toolkit:DataGridTemplateColumn Width="40" Header="PI" Tag="Type">
 			<toolkit:DataGridTemplateColumn.CellTemplate>
 				<DataTemplate>
 					<Image Width="30" Height="14" Source="{Binding IconUri}"/>
 				</DataTemplate>
 			</toolkit:DataGridTemplateColumn.CellTemplate>
 		</toolkit:DataGridTemplateColumn>
-		<toolkit:DataGridTemplateColumn Header="Ordinal" Width="140">
+		<toolkit:DataGridTemplateColumn Header="Ordinal" Width="140" Tag="Ordinal">
 			<toolkit:DataGridTemplateColumn.CellTemplate>
 				<DataTemplate>
 					<TextBlock Text="{Binding Ordinal, 
@@ -42,7 +43,7 @@
 				</DataTemplate>
 			</toolkit:DataGridTemplateColumn.CellTemplate>
 		</toolkit:DataGridTemplateColumn>
-		<toolkit:DataGridTemplateColumn Header="Hint" Width="140">
+		<toolkit:DataGridTemplateColumn Header="Hint" Width="140" Tag="Hint">
 			<toolkit:DataGridTemplateColumn.CellTemplate>
 				<DataTemplate>
 					<TextBlock Text="{Binding Hint, Converter={StaticResource StringFormatConverter}, 
@@ -50,9 +51,9 @@
 				</DataTemplate>
 			</toolkit:DataGridTemplateColumn.CellTemplate>
 		</toolkit:DataGridTemplateColumn>
-		<toolkit:DataGridTextColumn Header="Function" Width="250" Binding="{Binding Name}"/>
-		<toolkit:DataGridTextColumn Header="Module" Width="300" Binding="{Binding ModuleName}"/>
-		<toolkit:DataGridTextColumn Header="Delayed" Width="100" Binding="{Binding DelayImport}"/>
-		<toolkit:DataGridTextColumn Header="Demangler" Width="250" Binding="{Binding Demangler}"/>
-	</toolkit:DataGrid.Columns>
-</toolkit:DataGrid>
+		<toolkit:DataGridTextColumn Header="Function" Width="250" Binding="{Binding Name}" Tag="Name"/>
+		<toolkit:DataGridTextColumn Header="Module" Width="300" Binding="{Binding ModuleName}" Tag="ModuleName"/>
+		<toolkit:DataGridTextColumn Header="Delayed" Width="100" Binding="{Binding DelayImport}" Tag="DelayImport"/>
+		<toolkit:DataGridTextColumn Header="Demangler" Width="250" Binding="{Binding Demangler}" Tag="Name"/>
+	</local:DataGridSort.Columns>
+</local:DataGridSort>

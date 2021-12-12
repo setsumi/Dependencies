@@ -8,8 +8,31 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<Grid Background="#FF5C8F88">
-		<TabView x:Name="FileTabs" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsAddTabButtonVisible="False">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		<MenuBar>
+			<MenuBar.Items>
+				<MenuBarItem Title="File">
+					<MenuBarItem.Items>
+						<MenuFlyoutItem x:Name="OpenItem" Text="Open" Click="OpenItem_Click"/>
+						<MenuFlyoutSeparator/>
+					</MenuBarItem.Items>
+
+				</MenuBarItem>
+				<MenuBarItem Title="View">
+
+				</MenuBarItem>
+				<MenuBarItem Title="Options">
+
+				</MenuBarItem>
+			</MenuBar.Items>
+
+		</MenuBar>
+
+		<TabView x:Name="FileTabs" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsAddTabButtonVisible="False" Padding="4,4,0,0"  Background="#FF5C8F88">
 			
 		</TabView>
     </Grid>

@@ -12,6 +12,8 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
+using Windows.Storage.Pickers;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -30,6 +32,43 @@ namespace Dependencies
 			var window = new DependencyWindow("coreclr.dll");
 			window.Header = "Test";
 			FileTabs.TabItems.Add(window);
+		}
+
+		/// <summary>
+		/// Open a new depedency tree window on a given PE.
+		/// </summary>
+		/// <param name="Filename">File path to a PE to process.</param>
+		public void OpenNewDependencyWindow(String Filename)
+		{
+			var newDependencyWindow = new DependencyWindow(Filename);
+			newDependencyWindow.Header = Path.GetFileNameWithoutExtension(Filename);
+
+			FileTabs.TabItems.Add(newDependencyWindow);
+			FileTabs.SelectedItem = newDependencyWindow;
+
+			// Update recent files entries
+#if TODO
+			App.AddToRecentDocuments(Filename);
+			PopulateRecentFilesMenuItems();
+#endif
+		}
+
+		private async void OpenItem_Click(object sender, RoutedEventArgs e)
+		{
+			FileOpenPicker loadPicker = new FileOpenPicker();
+
+			loadPicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+			loadPicker.FileTypeFilter.Add("*");
+
+			WinRT.Interop.InitializeWithWindow.Initialize(loadPicker, MainWindow.GetWindowHandle());
+
+			StorageFile loadFile = await loadPicker.PickSingleFileAsync();
+
+			if (loadFile == null)
+				return;
+
+			OpenNewDependencyWindow(loadFile.Path);
+
 		}
 	}
 }

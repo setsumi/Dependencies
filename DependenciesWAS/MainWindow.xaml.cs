@@ -25,7 +25,20 @@ namespace Dependencies
 	{
 		public MainWindow()
 		{
+			_mainWindow = this;
+
+			_windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(this);
+
 			this.InitializeComponent();
 		}
+
+
+		public static IntPtr GetWindowHandle()
+		{
+			return _windowHandle;
+		}
+
+		private static MainWindow _mainWindow;
+		private static IntPtr _windowHandle;
 	}
 }

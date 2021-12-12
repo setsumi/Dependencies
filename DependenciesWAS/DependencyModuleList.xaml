@@ -18,6 +18,7 @@
 		<local:ImageToHeaderConverter x:Key="img"/>
 		<local:OverlayImageToHeaderConverter x:Key="img_overlay"/>
 		<local:StringFormatConverter x:Key="StringFormatConverter"/>
+		<local:ChecksumConverter x:Key="ChecksumConverter"/>
 		<Style TargetType="toolkit:DataGridCell">
 			<Setter Property="FontSize" Value="12"/>
 			<Setter Property="MinHeight" Value="10"/>
@@ -50,5 +51,33 @@
 		<toolkit:DataGridTextColumn Header="Entry point" Width="100" Binding="{Binding EntryPoint, TargetNullValue='N/A', Converter={StaticResource StringFormatConverter}, ConverterParameter='0x{0:x08}' }"/>
 		<toolkit:DataGridTextColumn Header="Subsystem" Width="100" Binding="{Binding Subsystem, TargetNullValue='N/A', Converter={StaticResource StringFormatConverter}, ConverterParameter='0x{0:x08}' }"/>
 		<toolkit:DataGridTextColumn Header="Subsystem Ver." Width="100" Binding="{Binding SubsystemVersion, TargetNullValue='N/A'}"  />
+
+		<toolkit:DataGridTemplateColumn Header="Checksum" Width="200">
+			<toolkit:DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+						<TextBlock Text="{Binding Checksum, TargetNullValue='N/A', Converter={StaticResource StringFormatConverter}, ConverterParameter='0x{0:x08}'}"/>
+						<TextBlock Margin="8,0,0,0" Text="{Binding CorrectChecksum, Converter={StaticResource ChecksumConverter}}"/>
+
+					</StackPanel>
+					<!--<TextBlock TextAlignment="Right">
+						<TextBlock.Style>
+							<Style TargetType="{x:Type TextBlock}">
+
+								<Style.Triggers>
+									<DataTrigger Binding="{Binding CorrectChecksum , TargetNullValue='False'}" Value="False" >
+										<Setter Property="Text" Value="{Binding Checksum, StringFormat={}0x{0:x08} (incorrect), TargetNullValue='N/A' }"/>
+									</DataTrigger>
+
+									<DataTrigger Binding="{Binding CorrectChecksum}" Value="True" >
+										<Setter Property="Text" Value="{Binding Checksum, StringFormat={}0x{0:x08} (correct), TargetNullValue='N/A' }"/>
+									</DataTrigger>
+								</Style.Triggers>
+							</Style>
+						</TextBlock.Style>
+					</TextBlock>-->
+				</DataTemplate>
+			</toolkit:DataGridTemplateColumn.CellTemplate>
+		</toolkit:DataGridTemplateColumn>
 	</toolkit:DataGrid.Columns>
 </toolkit:DataGrid>

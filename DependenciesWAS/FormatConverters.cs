@@ -25,4 +25,18 @@ namespace Dependencies
             throw new NotImplementedException();
         }
     }
+
+    public class ChecksumConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            bool checksumCorrect = (bool)value;
+            return checksumCorrect ? " (correct)" : " (incorrect)";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

@@ -32,8 +32,35 @@
 
 		</MenuBar>
 
-		<TabView x:Name="FileTabs" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsAddTabButtonVisible="False" Padding="4,4,0,0"  Background="#FF5C8F88">
+		<TabView x:Name="FileTabs" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsAddTabButtonVisible="False" Padding="4,4,0,0" TabCloseRequested="FileTabs_TabCloseRequested" TabItemsChanged="FileTabs_TabItemsChanged"  Background="#FF5C8F88">
 			
 		</TabView>
-    </Grid>
+
+		<Grid   Name="DefaultMessage"
+                Grid.Row="1" 
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+              >
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="48"/>
+				<ColumnDefinition Width="auto"/>
+			</Grid.ColumnDefinitions>
+
+			<Image Source="Images/Dependencies_48px-no-blur.png" Height="48" Width="48" Grid.Column="0"/>
+
+
+
+			<TextBlock Grid.Column="2" 
+                       TextWrapping="Wrap"
+                       VerticalAlignment="Center"
+                       Name="TextContent"
+                       FontFamily="Courrier New"
+                       FontSize="18"
+                       Margin="20 0 0 00"
+                       >
+                Analyze a new binary via "File -> Open" (Ctrl+O) <LineBreak/>
+                or simply by dragging it into the application.
+			</TextBlock>
+		</Grid>
+	</Grid>
 </Page>

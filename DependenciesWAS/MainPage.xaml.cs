@@ -34,6 +34,7 @@ namespace Dependencies
 			FileTabs.TabItems.Add(window);
 		}
 
+		
 		/// <summary>
 		/// Open a new depedency tree window on a given PE.
 		/// </summary>
@@ -69,6 +70,15 @@ namespace Dependencies
 
 			OpenNewDependencyWindow(loadFile.Path);
 
+		}
+
+		private void FileTabs_TabCloseRequested(TabView sender, TabViewTabCloseRequestedEventArgs args)
+		{
+			FileTabs.TabItems.Remove(args.Item);
+		}
+		private void FileTabs_TabItemsChanged(TabView sender, IVectorChangedEventArgs args)
+		{
+			this.DefaultMessage.Visibility = FileTabs.TabItems.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 		}
 	}
 }

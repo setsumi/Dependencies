@@ -1204,20 +1204,20 @@ namespace Dependencies
 		{
 			if (SelectedModule == null)
 			{
-				//this.ImportList.Items.Clear();
+				this.ImportList.Items.Clear();
 				this.ExportList.Items.Clear();
 			}
 			else
 			{
 				if (Parent == null) // root module
 				{
-					//this.ImportList.SetRootImports(SelectedModule.Imports, SymPrv, this);
+					this.ImportList.SetRootImports(SelectedModule.Imports, SymPrv, this);
 				}
 				else
 				{
 					// Imports from the same dll are not necessarly sequential (see: HDDGuru\RawCopy.exe)
 					var machingImports = Parent.Imports.FindAll(imp => imp.Name == SelectedModule._Name);
-					//this.ImportList.SetImports(SelectedModule.Filepath, SelectedModule.Exports, machingImports, SymPrv, this);
+					this.ImportList.SetImports(SelectedModule.Filepath, SelectedModule.Exports, machingImports, SymPrv, this);
 				}
 				//this.ImportList.ResetAutoSortProperty();
 
@@ -1225,6 +1225,72 @@ namespace Dependencies
 				//this.ExportList.ResetAutoSortProperty();
 			}
 		}
+
+		public PE LoadImport(string ModuleName, DisplayModuleInfo CurrentModule = null, bool DelayLoad = false)
+		{
+			if (CurrentModule == null)
+			{
+				CurrentModule = this._SelectedModule;
+			}
+
+			Tuple<ModuleSearchStrategy, PE> ResolvedModule = BinaryCache.ResolveModule(
+				this.Pe,
+				ModuleName,
+				this.SxsEntriesCache,
+				this.CustomSearchFolders,
+				this.WorkingDirectory
+			);
+
+			string ModuleFilepath = (ResolvedModule.Item2 != null) ? ResolvedModule.Item2.Filepath : null;
+
+			// Not found module, returning PE without update module list
+			if (ModuleFilepath == null)
+			{
+				return ResolvedModule.Item2;
+			}
+
+			ModuleFlag ModuleFlags = ModuleFlag.NoFlag;
+			if (DelayLoad)
+				ModuleFlags |= ModuleFlag.DelayLoad;
+			if (ResolvedModule.Item1 == ModuleSearchStrategy.ApiSetSchema)
+				ModuleFlags |= ModuleFlag.ApiSet;
+
+			ModuleCacheKey ModuleKey = new ModuleCacheKey(ModuleName, ModuleFilepath, ModuleFlags);
+			if (!this.ProcessedModulesCache.ContainsKey(ModuleKey))
+			{
+				DisplayModuleInfo NewModule;
+
+				// apiset resolution are a bit trickier
+				if (ResolvedModule.Item1 == ModuleSearchStrategy.ApiSetSchema)
+				{
+					var ApiSetContractModule = new DisplayModuleInfo(
+						BinaryCache.LookupApiSetLibrary(ModuleName),
+						ResolvedModule.Item2,
+						ResolvedModule.Item1,
+						ModuleFlags
+					);
+					NewModule = new ApiSetModuleInfo(ModuleName, ref ApiSetContractModule);
+				}
+				else
+				{
+					NewModule = new DisplayModuleInfo(
+						ModuleName,
+						ResolvedModule.Item2,
+						ResolvedModule.Item1,
+						ModuleFlags
+					);
+
+				}
+
+				this.ProcessedModulesCache[ModuleKey] = NewModule;
+
+				// add it to the module list
+				this.ModulesList.AddModule(this.ProcessedModulesCache[ModuleKey]);
+			}
+
+			return ResolvedModule.Item2;
+		}
+
 
 		public RelayCommand DoFindModuleInTree
 		{

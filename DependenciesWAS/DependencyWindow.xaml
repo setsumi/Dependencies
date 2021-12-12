@@ -123,9 +123,9 @@
 					<RowDefinition Height="142*"/>
 				</Grid.RowDefinitions>
 
-				<!--<local:DependencyImportList x:Name="ImportList" 
+				<local:DependencyImportList x:Name="ImportList" 
                                             Grid.Row="0" />
--->
+
 
 				<toolkit:GridSplitter x:Name="ImportExportSplitter" 
                               HorizontalAlignment="Stretch" 

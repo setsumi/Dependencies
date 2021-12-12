@@ -13,6 +13,7 @@
 		<WindowsPackageType>None</WindowsPackageType>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="DependencyExportList.xaml" />
     <None Remove="DependencyWindow.xaml" />
     <None Remove="MainPage.xaml" />
   </ItemGroup>
@@ -58,6 +59,9 @@
     <ProjectReference Include="..\DependenciesLib\DependenciesLib.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Page Update="DependencyExportList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="DependencyModuleList.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>

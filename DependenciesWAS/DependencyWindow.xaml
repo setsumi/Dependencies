@@ -33,7 +33,7 @@
 			<TreeView x:Name="DllTreeView"  
                     HorizontalContentAlignment="Stretch" 
                     VerticalContentAlignment="Stretch" 
-                    Padding="0" Expanding="DllTreeView_Expanding">
+                    Padding="0" Expanding="DllTreeView_Expanding" ItemInvoked="DllTreeView_ItemInvoked">
 				<TreeView.Resources>
 					<Thickness x:Key="TreeViewItemPresenterMargin">4,0</Thickness>
 					<Thickness x:Key="TreeViewItemPresenterPadding">0,0,0,0</Thickness>
@@ -110,9 +110,42 @@
 			
 			</TreeView>
 
+			<toolkit:GridSplitter Grid.Column="1" 
+                          HorizontalContentAlignment="Stretch"
+                          VerticalContentAlignment="Stretch"
+                          HorizontalAlignment="Stretch"/>
+
+			<Grid x:Name="ImportExportGrid" Grid.Column="2">
+
+				<Grid.RowDefinitions>
+					<RowDefinition Height="145*"/>
+					<RowDefinition Height="5"/>
+					<RowDefinition Height="142*"/>
+				</Grid.RowDefinitions>
+
+				<!--<local:DependencyImportList x:Name="ImportList" 
+                                            Grid.Row="0" />
+-->
+
+				<toolkit:GridSplitter x:Name="ImportExportSplitter" 
+                              HorizontalAlignment="Stretch" 
+                              HorizontalContentAlignment="Stretch" 
+                              VerticalContentAlignment="Center" 
+                              MinHeight="8" 
+                              Grid.Row="1"/>
+
+				<local:DependencyExportList x:Name="ExportList" 
+                                            Grid.Row="2" />
+
+			</Grid>
+
 		</Grid>
 
-		<toolkit:GridSplitter Grid.Row="1"/>
+		<toolkit:GridSplitter x:Name="LogSplitter" 
+                      HorizontalAlignment="Stretch" 
+                      HorizontalContentAlignment="Stretch" 
+                      VerticalContentAlignment="Stretch" 
+                      Grid.Row="1"/>
 
 
 		<local:DependencyModuleList x:Name="ModulesList"

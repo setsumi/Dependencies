@@ -33,6 +33,7 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
     <PackageReference Include="CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="7.1.2" />
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.196" />
     <PackageReference Include="Mono.Cecil" Version="0.11.4" />
@@ -48,6 +49,13 @@
   <ItemGroup>
     <ProjectReference Include="..\ClrPhlib\ClrPhlib.vcxproj" />
     <ProjectReference Include="..\DependenciesLib\DependenciesLib.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="DependencyExportList.xaml">
@@ -145,6 +153,10 @@
     </None>
     <None Update="Images\__OldDependencies_32x.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>

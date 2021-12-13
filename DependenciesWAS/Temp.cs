@@ -10,7 +10,7 @@ namespace Dependencies
     
 }
 
-
+/*
 namespace Dependencies.Properties.Settings
 {
     class Default
@@ -24,3 +24,4 @@ namespace Dependencies.Properties.Settings
     }
 
 }
+*/

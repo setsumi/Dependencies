@@ -99,12 +99,10 @@ namespace Dependencies
 			mainWindow.Activate();
 		}
 
-#if TODO
-		void AppExit()
+		public void AppExit()
 		{
             BinaryCache.Instance.Unload();
 		}
-#endif
 
 		private Window mainWindow;
 	}

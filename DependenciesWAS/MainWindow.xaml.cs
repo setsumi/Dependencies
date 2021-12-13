@@ -37,6 +37,11 @@ namespace Dependencies
 			(App.Current as App).AppExit();
 		}
 
+		public static MainWindow GetWindow()
+		{
+			return _mainWindow;
+		}
+
 		public static IntPtr GetWindowHandle()
 		{
 			return _windowHandle;

@@ -16,15 +16,35 @@
 		</Grid.RowDefinitions>
 		<MenuBar>
 			<MenuBar.Items>
-				<MenuBarItem Title="File">
+				<MenuBarItem Title="File" AccessKey="F" >
 					<MenuBarItem.Items>
-						<MenuFlyoutItem x:Name="OpenItem" Text="Open" Click="OpenItem_Click"/>
+						<MenuFlyoutItem x:Name="OpenItem" Text="Open" Click="OpenItem_Click">
+							<MenuFlyoutItem.KeyboardAccelerators>
+								<KeyboardAccelerator Modifiers="Control" Key="O"/>
+							</MenuFlyoutItem.KeyboardAccelerators>
+						</MenuFlyoutItem>
 						<MenuFlyoutSeparator/>
+						<MenuFlyoutItem x:Name="ExitItem" Text="Exit" Click="ExitItem_Click">
+							<MenuFlyoutItem.KeyboardAccelerators>
+								<KeyboardAccelerator Modifiers="Control" Key="Q"/>
+							</MenuFlyoutItem.KeyboardAccelerators>
+						</MenuFlyoutItem>
 					</MenuBarItem.Items>
 
 				</MenuBarItem>
-				<MenuBarItem Title="View">
-
+				<MenuBarItem Title="View" AccessKey="V" >
+					<MenuBarItem.Items>
+						<ToggleMenuFlyoutItem x:Name="FullPathItem" AccessKey="F" Text="Full Paths" IsChecked="{x:Bind FullPathSetting, Mode=TwoWay}">
+							<ToggleMenuFlyoutItem.KeyboardAccelerators>
+								<KeyboardAccelerator Modifiers="None" Key="F9"/>
+							</ToggleMenuFlyoutItem.KeyboardAccelerators>
+						</ToggleMenuFlyoutItem>
+						<ToggleMenuFlyoutItem AccessKey="U" Text="Undecorate C++ Functions" IsChecked="{x:Bind UndecorateSetting, Mode=TwoWay }">
+							<ToggleMenuFlyoutItem.KeyboardAccelerators>
+								<KeyboardAccelerator Modifiers="None" Key="F10"/>
+							</ToggleMenuFlyoutItem.KeyboardAccelerators>
+						</ToggleMenuFlyoutItem>
+					</MenuBarItem.Items>
 				</MenuBarItem>
 				<MenuBarItem Title="Options">
 

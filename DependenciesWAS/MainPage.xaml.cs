@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Dependencies.Properties;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -7,8 +8,10 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -23,7 +26,7 @@ namespace Dependencies
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	public sealed partial class MainPage : Page
+	public sealed partial class MainPage : Page, INotifyPropertyChanged
 	{
 		public MainPage()
 		{
@@ -32,6 +35,13 @@ namespace Dependencies
 			var window = new DependencyWindow("coreclr.dll");
 			window.Header = "Test";
 			FileTabs.TabItems.Add(window);
+		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
 		public void SetStatusBarMessage(string message)
@@ -76,6 +86,12 @@ namespace Dependencies
 
 		}
 
+		private async void ExitItem_Click(object sender, RoutedEventArgs e)
+		{
+			MainWindow.GetWindow().Close();
+
+		}
+
 		private void FileTabs_TabCloseRequested(TabView sender, TabViewTabCloseRequestedEventArgs args)
 		{
 			FileTabs.TabItems.Remove(args.Item);
@@ -84,5 +100,9 @@ namespace Dependencies
 		{
 			this.DefaultMessage.Visibility = FileTabs.TabItems.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 		}
+
+		bool FullPathSetting { get => Settings.Default.FullPath; set { Settings.Default.FullPath = value; OnPropertyChanged(); } }
+		bool UndecorateSetting { get => Settings.Default.Undecorate; set { Settings.Default.Undecorate = value; OnPropertyChanged(); } }
+
 	}
 }

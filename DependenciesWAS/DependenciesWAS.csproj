@@ -13,6 +13,7 @@
 		<WindowsPackageType>None</WindowsPackageType>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="DataGridCompactStyle.xaml" />
     <None Remove="DependencyExportList.xaml" />
     <None Remove="DependencyImportList.xaml" />
     <None Remove="DependencyWindow.xaml" />
@@ -53,6 +54,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="DependencyImportList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="DataGridCompactStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <None Update="DependencyModuleList.xaml">

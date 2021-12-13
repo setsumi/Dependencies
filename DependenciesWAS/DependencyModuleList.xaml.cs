@@ -47,7 +47,6 @@ namespace Dependencies
 		public DependencyModuleList()
 		{
 			SortedItems = new Toolkit.Uwp.UI.AdvancedCollectionView(Items, true);
-
 			this.InitializeComponent();
 		}
 

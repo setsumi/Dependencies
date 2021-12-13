@@ -34,6 +34,10 @@ namespace Dependencies
 			FileTabs.TabItems.Add(window);
 		}
 
+		public void SetStatusBarMessage(string message)
+		{
+			AppStatusBar.Message = message;
+		}
 		
 		/// <summary>
 		/// Open a new depedency tree window on a given PE.

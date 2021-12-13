@@ -12,6 +12,7 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 		<MenuBar>
 			<MenuBar.Items>
@@ -33,7 +34,7 @@
 		</MenuBar>
 
 		<TabView x:Name="FileTabs" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsAddTabButtonVisible="False" Padding="4,4,0,0" TabCloseRequested="FileTabs_TabCloseRequested" TabItemsChanged="FileTabs_TabItemsChanged"  Background="#FF5C8F88">
-			
+
 		</TabView>
 
 		<Grid   Name="DefaultMessage"
@@ -62,5 +63,18 @@
                 or simply by dragging it into the application.
 			</TextBlock>
 		</Grid>
+
+		<InfoBar x:Name="AppStatusBar" 
+                   HorizontalContentAlignment="Stretch" 
+                   VerticalContentAlignment="Bottom" 
+                   Grid.Row="2" 
+                   MinHeight="20" 
+                   Margin="0" 
+                   VerticalAlignment="Bottom" IsClosable="False" IsOpen="True" Height="24" IsIconVisible="False" CornerRadius="0" BorderThickness="0,1,0,0" Background="{ThemeResource LayerFillColorDefaultBrush}">
+			<!-- Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=ShowStatusBar, Mode=OneWay, Converter={StaticResource BooleanToVisibility}}" -->
+			<InfoBar.Message>
+				"Welcome to Dependencies !"
+			</InfoBar.Message>
+		</InfoBar>
 	</Grid>
 </Page>

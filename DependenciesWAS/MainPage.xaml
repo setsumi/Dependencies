@@ -44,6 +44,8 @@
 								<KeyboardAccelerator Modifiers="None" Key="F10"/>
 							</ToggleMenuFlyoutItem.KeyboardAccelerators>
 						</ToggleMenuFlyoutItem>
+						<MenuFlyoutSeparator/>
+						<ToggleMenuFlyoutItem AccessKey="S" Text="Status Bar" IsChecked="{x:Bind ShowStatusBarSetting, Mode=TwoWay }"/>
 					</MenuBarItem.Items>
 				</MenuBarItem>
 				<MenuBarItem Title="Options">
@@ -90,7 +92,8 @@
                    Grid.Row="2" 
                    MinHeight="20" 
                    Margin="0" 
-                   VerticalAlignment="Bottom" IsClosable="False" IsOpen="True" Height="24" IsIconVisible="False" CornerRadius="0" BorderThickness="0,1,0,0" Background="{ThemeResource LayerFillColorDefaultBrush}">
+                   VerticalAlignment="Bottom" IsClosable="False" IsOpen="True" Height="24" IsIconVisible="False" CornerRadius="0" BorderThickness="0,1,0,0" Background="{ThemeResource LayerFillColorDefaultBrush}"
+				   Visibility="{x:Bind ShowStatusBarSetting, Mode=OneWay}">
 			<!-- Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=ShowStatusBar, Mode=OneWay, Converter={StaticResource BooleanToVisibility}}" -->
 			<InfoBar.Message>
 				"Welcome to Dependencies !"

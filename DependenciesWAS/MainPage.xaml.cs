@@ -86,10 +86,9 @@ namespace Dependencies
 
 		}
 
-		private async void ExitItem_Click(object sender, RoutedEventArgs e)
+		private void ExitItem_Click(object sender, RoutedEventArgs e)
 		{
 			MainWindow.GetWindow().Close();
-
 		}
 
 		private void FileTabs_TabCloseRequested(TabView sender, TabViewTabCloseRequestedEventArgs args)
@@ -103,6 +102,6 @@ namespace Dependencies
 
 		bool FullPathSetting { get => Settings.Default.FullPath; set { Settings.Default.FullPath = value; OnPropertyChanged(); } }
 		bool UndecorateSetting { get => Settings.Default.Undecorate; set { Settings.Default.Undecorate = value; OnPropertyChanged(); } }
-
+		bool ShowStatusBarSetting { get => Settings.Default.ShowStatusBar; set { Settings.Default.ShowStatusBar = value; OnPropertyChanged(); } }
 	}
 }

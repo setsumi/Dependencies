@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
@@ -98,6 +99,68 @@ namespace Dependencies
 		private void FileTabs_TabItemsChanged(TabView sender, IVectorChangedEventArgs args)
 		{
 			this.DefaultMessage.Visibility = FileTabs.TabItems.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+			this.FileTabs.Visibility = FileTabs.TabItems.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
+		}
+
+		private async void RootGrid_DragEnter(object sender, DragEventArgs e)
+		{
+			// Check if the drag contains storage items
+			if (e.DataView == null)
+				return;
+
+			if (!e.DataView.Contains(StandardDataFormats.StorageItems))
+				return;
+
+			// Get deferal
+			DragOperationDeferral deferal = e.GetDeferral();
+
+			e.AcceptedOperation = DataPackageOperation.None;
+
+			try
+			{
+				// Check that at least one file is included
+				IReadOnlyList<IStorageItem> files = await e.DataView.GetStorageItemsAsync();
+				foreach (IStorageItem item in files)
+				{
+					if (item.IsOfType(StorageItemTypes.File))
+					{
+						// Note: Dropped files are read only. Disable linking files here for now.
+						e.AcceptedOperation = /*(e.Modifiers.HasFlag(DragDropModifiers.Alt) )  ? DataPackageOperation.Link : */DataPackageOperation.Copy;
+						break;
+					}
+				}
+
+				// Complete operation
+				e.Handled = true;
+			}
+			catch (Exception)
+			{
+			}
+			deferal.Complete();
+		}
+
+		private async void RootGrid_Drop(object sender, DragEventArgs e)
+		{
+			e.AcceptedOperation = DataPackageOperation.Copy;
+			DragOperationDeferral deferal = e.GetDeferral();
+			e.Handled = true;
+			try
+			{
+				IReadOnlyList<IStorageItem> files = await e.DataView.GetStorageItemsAsync();
+				foreach (IStorageItem item in files)
+				{
+					if (item.IsOfType(StorageItemTypes.File))
+					{
+						deferal.Complete();
+						OpenNewDependencyWindow(item.Path);
+						return;
+					}
+				}
+			}
+			catch (Exception)
+			{
+			}
+			deferal.Complete();
 		}
 
 		bool FullPathSetting { get => Settings.Default.FullPath; set { Settings.Default.FullPath = value; OnPropertyChanged(); } }

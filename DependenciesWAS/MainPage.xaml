@@ -7,15 +7,20 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-	<Grid AllowDrop="True" DragEnter="RootGrid_DragEnter" Drop="RootGrid_Drop" Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+	<Grid AllowDrop="True" DragEnter="RootGrid_DragEnter" Drop="RootGrid_Drop">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
-		<MenuBar>
+		<MenuBar Margin="4,0,0,0">
+			<MenuBar.Resources>
+				<Style TargetType="Button">
+					<Setter Property="FontSize" Value="12"/>
+				</Style>
+			</MenuBar.Resources>
 			<MenuBar.Items>
-				<MenuBarItem Title="File" AccessKey="F" >
+				<MenuBarItem Title="File" AccessKey="F">
 					<MenuBarItem.Items>
 						<MenuFlyoutItem x:Name="OpenItem" Text="Open" Click="OpenItem_Click">
 							<MenuFlyoutItem.KeyboardAccelerators>

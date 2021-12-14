@@ -64,7 +64,7 @@ namespace Dependencies
 		{
 			if (e.PropertyName == "StatusBarMessage" && mainWindow != null)
 			{
-				(mainWindow.Content as MainPage).SetStatusBarMessage(StatusBarMessage);
+				mainWindow.SetStatusBarMessage(StatusBarMessage);
 			}
 		}
 		public PE LoadBinary(string path)
@@ -126,13 +126,13 @@ namespace Dependencies
 			switch (Phlib.GetClrPhArch())
 			{
 				case CLRPH_ARCH.x86:
-					mainWindow.Title = "Dependencies (x86)";
+					mainWindow.SetWindowTitle("Dependencies (x86)");
 					break;
 				case CLRPH_ARCH.x64:
-					mainWindow.Title = "Dependencies (x64)";
+					mainWindow.SetWindowTitle("Dependencies (x64)");
 					break;
 				case CLRPH_ARCH.WOW64:
-					mainWindow.Title = "Dependencies (WoW64)";
+					mainWindow.SetWindowTitle("Dependencies (WoW64)");
 					break;
 			}
 
@@ -145,7 +145,7 @@ namespace Dependencies
 			BinaryCache.Instance.Unload();
 		}
 
-		private Window mainWindow;
+		private MainWindow mainWindow;
 		private string statusBarMessage = "";
 		private Dictionary<string, BitmapImage> iconCache;
 	}

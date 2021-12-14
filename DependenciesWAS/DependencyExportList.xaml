@@ -29,7 +29,7 @@
 		<toolkit:DataGridTemplateColumn Width="40" Header="E" Tag="Type">
 			<toolkit:DataGridTemplateColumn.CellTemplate>
 				<DataTemplate>
-					<Image Width="30" Height="14" Source="{Binding IconUri}"/>
+					<Image Width="30" Height="14" Source="{Binding CachedIcon}"/>
 				</DataTemplate>
 			</toolkit:DataGridTemplateColumn.CellTemplate>
 		</toolkit:DataGridTemplateColumn>

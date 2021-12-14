@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
 using System;
@@ -36,6 +37,7 @@ namespace Dependencies
 		public App()
 		{
 			this.InitializeComponent();
+			iconCache = new Dictionary<string, BitmapImage>();
 			(Application.Current as App).PropertyChanged += App_PropertyChanged;
 		}
 
@@ -88,6 +90,19 @@ namespace Dependencies
 			return pe;
 		}
 
+		public BitmapImage GetCachedIcon(string path)
+		{
+			string iconPath = "ms-appx:///" + path;
+
+
+			if (iconCache.ContainsKey(iconPath))
+				return (iconCache[iconPath]);
+
+			BitmapImage newImage = new BitmapImage(new Uri(iconPath));
+			iconCache[iconPath] = newImage;
+			return newImage;
+		}
+
 		/// <summary>
 		/// Invoked when the application is launched normally by the end user.  Other entry points
 		/// will be used such as when the application is launched to open a specific file.
@@ -132,5 +147,6 @@ namespace Dependencies
 
 		private Window mainWindow;
 		private string statusBarMessage = "";
+		private Dictionary<string, BitmapImage> iconCache;
 	}
 }

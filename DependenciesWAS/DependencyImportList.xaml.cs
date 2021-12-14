@@ -95,16 +95,16 @@ namespace Dependencies
 			catch { }
 		}
 
-		public ObservableCollection<DisplayPeImport> Items = new ObservableCollection<DisplayPeImport>();
-
 		private void ItemContextMenu_Opening(object sender, object e)
 		{
 			// Select item when context menu is opened
 			MenuFlyout flyout = sender as MenuFlyout;
-			if(flyout != null && flyout.Target is DataGridRow row)
+			if (flyout != null && flyout.Target is DataGridRow row)
 			{
 				this.SelectedItem = row.DataContext;
 			}
 		}
+
+		public ObservableCollection<DisplayPeImport> Items = new ObservableCollection<DisplayPeImport>();
 	}
 }

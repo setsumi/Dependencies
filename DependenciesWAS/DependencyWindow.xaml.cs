@@ -1305,23 +1305,23 @@ namespace Dependencies
 			}
 		}
 		
-/*		private void ExpandAllNodes_Executed(object sender, ExecutedRoutedEventArgs e)
+		private void ExpandAllNodes_Executed(XamlUICommand sender, ExecuteRequestedEventArgs args)
 		{
 			// Expanding all nodes tends to slow down the application (massive allocations for node DataContext)
 			// TODO : Reduce memory pressure by storing tree nodes data context in a HashSet and find an async trick
 			// to improve the command responsiveness.
-			System.Windows.Controls.TreeView TreeNode = sender as System.Windows.Controls.TreeView;
-			CollapseOrExpandAllNodes((TreeNode.Items[0] as ModuleTreeViewItem), true);
+			object TreeNode = (args.Parameter as TreeViewItem).DataContext;
+
+			CollapseOrExpandAllNodes((TreeNode as ModuleTreeViewItem), true);
 		}
 
-		private void CollapseAllNodes_Executed(object sender, ExecutedRoutedEventArgs e)
+		private void CollapseAllNodes_Executed(XamlUICommand sender, ExecuteRequestedEventArgs args)
 		{
-			System.Windows.Controls.TreeView TreeNode = sender as System.Windows.Controls.TreeView;
-			CollapseOrExpandAllNodes((TreeNode.Items[0] as ModuleTreeViewItem), false);
+			object TreeNode = (args.Parameter as TreeViewItem).DataContext;
+			CollapseOrExpandAllNodes((TreeNode as ModuleTreeViewItem), false);
 		}
-*/
 		
-		private void DoFindModuleInList_Execute(XamlUICommand sender, ExecuteRequestedEventArgs args)
+		private void DoFindModuleInList_Executed(XamlUICommand sender, ExecuteRequestedEventArgs args)
 		{
 			ModuleTreeViewItem Source = (args.Parameter as TreeViewItem).DataContext as ModuleTreeViewItem;
 			String SelectedModuleName = Source.GetTreeNodeHeaderName(Dependencies.Properties.Settings.Default.FullPath);

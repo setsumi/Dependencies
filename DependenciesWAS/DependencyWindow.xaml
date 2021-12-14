@@ -11,7 +11,11 @@
 	<TabViewItem.Resources>
 		<local:ImageToHeaderConverter x:Key="img"/>
 		<local:OverlayImageToHeaderConverter x:Key="img_overlay"/>
-		<XamlUICommand x:Key="DoFindModuleInList" Label="Highlight Matching Module In List" ExecuteRequested="DoFindModuleInList_Execute"/>
+		<XamlUICommand x:Key="DoFindModuleInList" Label="Highlight Matching Module In List" ExecuteRequested="DoFindModuleInList_Executed"/>
+		<XamlUICommand x:Key="DoExpandAllNodes" Label="Expand All" ExecuteRequested="ExpandAllNodes_Executed"/>
+		<XamlUICommand x:Key="DoCollapseAllNodes" Label="Collapse All" ExecuteRequested="CollapseAllNodes_Executed"/>
+
+
 	</TabViewItem.Resources>
 
 	<Grid x:Name="ResizeElemGrid" Margin="0,0,0,0" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -38,15 +42,18 @@
 				<TreeView.Resources>
 
 					<MenuFlyout x:Name="TreeItemContextMenu">
-						<MenuFlyoutItem Command="{StaticResource DoFindModuleInList}" CommandParameter="{x:Bind TreeItemContextMenu.Target, Mode=OneWay}"></MenuFlyoutItem>
-						
+						<MenuFlyoutItem Command="{StaticResource DoFindModuleInList}" CommandParameter="{x:Bind TreeItemContextMenu.Target, Mode=OneWay}"/>
+
 						<!--<MenuItem Header="Highlight Matching Module In List" 
                                 Command="{StaticResource DoFindModuleInList}"
                                 CommandParameter="{Binding RelativeSource={RelativeSource  AncestorLevel=1,AncestorType=TreeViewItem,Mode=FindAncestor}}"
                                 InputGestureText="Ctrl+M" 
-                                IsEnabled="True" />
-						<Separator Height="3" Margin="-1,0,0,0"/>
-						<MenuItem Header="Copy File Path" 
+                                IsEnabled="True" />-->
+						<MenuFlyoutSeparator/>
+						<MenuFlyoutItem Command="{StaticResource DoExpandAllNodes}" CommandParameter="{x:Bind TreeItemContextMenu.Target, Mode=OneWay}"/>
+						<MenuFlyoutItem Command="{StaticResource DoCollapseAllNodes}" CommandParameter="{x:Bind TreeItemContextMenu.Target, Mode=OneWay}"/>
+
+						<!--<MenuItem Header="Copy File Path" 
                                 Command="{Binding Path=DataContext.MoreInfo, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" 
                                 Background="WhiteSmoke" 
                                 InputGestureText="Ctrl+C" 

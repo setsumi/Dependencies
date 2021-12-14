@@ -1291,6 +1291,61 @@ namespace Dependencies
 			return ResolvedModule.Item2;
 		}
 
+		/// <summary>
+		/// Reentrant version of Collapse/Expand Node
+		/// </summary>
+		/// <param name="Item"></param>
+		/// <param name="ExpandNode"></param>
+		private void CollapseOrExpandAllNodes(ModuleTreeViewItem Item, bool ExpandNode)
+		{
+			Item.IsExpanded = ExpandNode;
+			foreach (ModuleTreeViewItem ChildItem in Item.Children)
+			{
+				CollapseOrExpandAllNodes(ChildItem, ExpandNode);
+			}
+		}
+		
+/*		private void ExpandAllNodes_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			// Expanding all nodes tends to slow down the application (massive allocations for node DataContext)
+			// TODO : Reduce memory pressure by storing tree nodes data context in a HashSet and find an async trick
+			// to improve the command responsiveness.
+			System.Windows.Controls.TreeView TreeNode = sender as System.Windows.Controls.TreeView;
+			CollapseOrExpandAllNodes((TreeNode.Items[0] as ModuleTreeViewItem), true);
+		}
+
+		private void CollapseAllNodes_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			System.Windows.Controls.TreeView TreeNode = sender as System.Windows.Controls.TreeView;
+			CollapseOrExpandAllNodes((TreeNode.Items[0] as ModuleTreeViewItem), false);
+		}
+*/
+		
+		private void DoFindModuleInList_Execute(XamlUICommand sender, ExecuteRequestedEventArgs args)
+		{
+			ModuleTreeViewItem Source = (args.Parameter as TreeViewItem).DataContext as ModuleTreeViewItem;
+			String SelectedModuleName = Source.GetTreeNodeHeaderName(Dependencies.Properties.Settings.Default.FullPath);
+
+			foreach (DisplayModuleInfo item in this.ModulesList.Items)
+			{
+				if (item.ModuleName == SelectedModuleName)
+				{
+
+					this.ModulesList.SelectedItem = item;
+					this.ModulesList.ScrollIntoView(item, null);
+					return;
+				}
+			}
+		}
+
+		private void ExpandAllParentNode(ModuleTreeViewItem Item)
+		{
+			if (Item != null)
+			{
+				ExpandAllParentNode(Item.Parent as ModuleTreeViewItem);
+				Item.IsExpanded = true;
+			}
+		}
 
 		public RelayCommand DoFindModuleInTree
 		{

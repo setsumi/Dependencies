@@ -11,7 +11,11 @@
 	<TabViewItem.Resources>
 		<local:ImageToHeaderConverter x:Key="img"/>
 		<local:OverlayImageToHeaderConverter x:Key="img_overlay"/>
-		<XamlUICommand x:Key="DoFindModuleInList" Label="Highlight Matching Module In List" ExecuteRequested="DoFindModuleInList_Executed"/>
+		<XamlUICommand x:Key="DoFindModuleInList" Label="Highlight Matching Module In List" ExecuteRequested="DoFindModuleInList_Executed">
+			<XamlUICommand.KeyboardAccelerators>
+				<KeyboardAccelerator Modifiers="Control" Key="M"/>
+			</XamlUICommand.KeyboardAccelerators>
+		</XamlUICommand>
 		<XamlUICommand x:Key="DoExpandAllNodes" Label="Expand All" ExecuteRequested="ExpandAllNodes_Executed"/>
 		<XamlUICommand x:Key="DoCollapseAllNodes" Label="Collapse All" ExecuteRequested="CollapseAllNodes_Executed"/>
 
@@ -43,31 +47,12 @@
 
 					<MenuFlyout x:Name="TreeItemContextMenu">
 						<MenuFlyoutItem Command="{StaticResource DoFindModuleInList}" CommandParameter="{x:Bind TreeItemContextMenu.Target, Mode=OneWay}"/>
-
-						<!--<MenuItem Header="Highlight Matching Module In List" 
-                                Command="{StaticResource DoFindModuleInList}"
-                                CommandParameter="{Binding RelativeSource={RelativeSource  AncestorLevel=1,AncestorType=TreeViewItem,Mode=FindAncestor}}"
-                                InputGestureText="Ctrl+M" 
-                                IsEnabled="True" />-->
 						<MenuFlyoutSeparator/>
 						<MenuFlyoutItem Command="{StaticResource DoExpandAllNodes}" CommandParameter="{x:Bind TreeItemContextMenu.Target, Mode=OneWay}"/>
 						<MenuFlyoutItem Command="{StaticResource DoCollapseAllNodes}" CommandParameter="{x:Bind TreeItemContextMenu.Target, Mode=OneWay}"/>
 
-						<!--<MenuItem Header="Copy File Path" 
-                                Command="{Binding Path=DataContext.MoreInfo, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" 
-                                Background="WhiteSmoke" 
-                                InputGestureText="Ctrl+C" 
-                                IsEnabled="False"  />
-						<Separator Height="3" Margin="-1,0,0,0"/>
-						<MenuItem Header="Expand All" 
-                                Command="{StaticResource DoExpandAllNodes}"
-                                IsEnabled="True"  />
-						<MenuItem Header="Collapse All" 
-                                Command="{StaticResource DoCollapseAllNodes}"
-                                IsEnabled="True"  />
-						<Separator Height="3" Margin="-1,0,0,0"/>
-						<MenuItem Name="FullPathItemTree" Header="Full Paths" Height="25" InputGestureText="F9" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=FullPath, Mode=TwoWay}" Margin="0,0,0.2,0"/>
-						<Separator Height="3" Margin="-1,0,0,0"/>
+						<!-- TODO
+				
 
 						<MenuItem Header="View Module in separate application" 
                                 Command="{Binding  Path=OpenNewAppCommand, RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TreeViewItem,Mode=FindAncestor}}"
@@ -102,8 +87,8 @@
 								<!--System icon for the current module-->
 								<Image Grid.Column="0" Width="16" Height="16" Margin="0,0,0,0" 
                                                Source="{x:Bind Path=ModuleFilePath, Converter={StaticResource img} }">
-                                </Image>
-						
+								</Image>
+
 								<!--Overlay for additional flags (delay import, apiset, etc.)-->
 								<Image Grid.Column="0" Width="16" Height="16" Margin="4,0,0,0" Source="{x:Bind Path=Flags, Converter={StaticResource img_overlay} }"></Image>
 
@@ -156,7 +141,7 @@
 						</TreeViewItem>
 					</DataTemplate>
 				</TreeView.ItemTemplate>
-			
+
 			</TreeView>
 
 			<toolkit:GridSplitter Grid.Column="1" MinWidth="8"

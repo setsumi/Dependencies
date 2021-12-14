@@ -1323,7 +1323,14 @@ namespace Dependencies
 		
 		private void DoFindModuleInList_Executed(XamlUICommand sender, ExecuteRequestedEventArgs args)
 		{
-			ModuleTreeViewItem Source = (args.Parameter as TreeViewItem).DataContext as ModuleTreeViewItem;
+			ModuleTreeViewItem Source = DllTreeView.SelectedItem as ModuleTreeViewItem;
+			
+			if (args.Parameter is TreeViewItem)
+				Source = (args.Parameter as TreeViewItem).DataContext as ModuleTreeViewItem;
+
+			if (Source == null)
+				return;
+
 			String SelectedModuleName = Source.GetTreeNodeHeaderName(Dependencies.Properties.Settings.Default.FullPath);
 
 			foreach (DisplayModuleInfo item in this.ModulesList.Items)

@@ -13,12 +13,8 @@
 			<RowDefinition Height="*"/>
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
-		<MenuBar Margin="4,0,0,0">
-			<MenuBar.Resources>
-				<Style TargetType="Button">
-					<Setter Property="FontSize" Value="12"/>
-				</Style>
-			</MenuBar.Resources>
+		<MenuBar Padding="4,0,0,0">
+			
 			<MenuBar.Items>
 				<MenuBarItem Title="File" AccessKey="F">
 					<MenuBarItem.Items>

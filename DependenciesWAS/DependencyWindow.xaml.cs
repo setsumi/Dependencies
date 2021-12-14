@@ -1354,6 +1354,62 @@ namespace Dependencies
 			}
 		}
 
+		/// <summary>
+		/// Reentrant version of Collapse/Expand Node
+		/// </summary>
+		/// <param name="Item"></param>
+		/// <param name="ExpandNode"></param>
+		private ModuleTreeViewItem FindModuleInTree(ModuleTreeViewItem Item, DisplayModuleInfo Module, bool Highlight = false)
+		{
+
+			if (Item.GetTreeNodeHeaderName(Dependencies.Properties.Settings.Default.FullPath) == Module.ModuleName)
+			{
+				if (Highlight)
+				{
+					ExpandAllParentNode(Item.Parent as ModuleTreeViewItem);
+					DllTreeView.SelectedItem = Item;
+
+#if TODO
+					Item.BringIntoView();
+					Item.Focus();
+#endif
+				}
+
+				return Item;
+			}
+
+			// BFS style search -> return the first matching node with the lowest "depth"
+			foreach (ModuleTreeViewItem ChildItem in Item.Children)
+			{
+				if (ChildItem.GetTreeNodeHeaderName(Dependencies.Properties.Settings.Default.FullPath) == Module.ModuleName)
+				{
+					if (Highlight)
+					{
+						ExpandAllParentNode(Item);
+						DllTreeView.SelectedItem = ChildItem;
+#if TODO
+						ChildItem.IsSelected = true;
+						ChildItem.BringIntoView();
+						ChildItem.Focus();
+#endif
+					}
+
+					return Item;
+				}
+			}
+
+			foreach (ModuleTreeViewItem ChildItem in Item.Children)
+			{
+				ModuleTreeViewItem matchingItem = FindModuleInTree(ChildItem, Module, Highlight);
+
+				// early exit as soon as we find a matching node
+				if (matchingItem != null)
+					return matchingItem;
+			}
+
+			return null;
+		}
+
 		public RelayCommand DoFindModuleInTree
 		{
 			get
@@ -1362,9 +1418,7 @@ namespace Dependencies
 				{
 					DisplayModuleInfo SelectedModule = (param as DisplayModuleInfo);
 					ModuleTreeViewItem TreeRootItem = this.DllTreeView.RootNodes[0] as ModuleTreeViewItem;
-#if TODO
                     FindModuleInTree(TreeRootItem, SelectedModule, true);
-#endif
 				});
 			}
 		}
@@ -1382,7 +1436,7 @@ namespace Dependencies
 				});
 			}
 		}
-		#endregion // Commands 
+#endregion // Commands 
 
 		private void TreeViewItem_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
 		{

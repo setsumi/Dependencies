@@ -57,7 +57,9 @@
 		<Grid Grid.Row="1" Background="#FF5C8F88"/>
 
 		<TabView x:Name="FileTabs" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsAddTabButtonVisible="False" Padding="4,4,0,0" TabCloseRequested="FileTabs_TabCloseRequested" TabItemsChanged="FileTabs_TabItemsChanged" >
-
+			<TabView.Resources>
+				<CornerRadius x:Key="OverlayCornerRadius">0</CornerRadius> <!--TODO: Remove when rendering issue fixed -->
+			</TabView.Resources>
 		</TabView>
 
 		<Grid   Name="DefaultMessage"

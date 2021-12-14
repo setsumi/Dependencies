@@ -19,6 +19,7 @@
 					<x:Double x:Key="InfoBarMessageFontSize">12</x:Double>
 
 				</ResourceDictionary>
+				<!-- The DataGrid resources need to be manually imported here so that the custom datagrid styles work -->
 				<ResourceDictionary Source="ms-appx:///CommunityToolkit.WinUI.UI.Controls.DataGrid/Themes/Generic.xaml"/>
 				<ResourceDictionary Source="ms-appx:///DataGridCompactStyle.xaml"/>
 

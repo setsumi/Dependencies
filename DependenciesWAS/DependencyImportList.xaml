@@ -23,6 +23,25 @@
 			<Setter Property="MinHeight" Value="10"/>
 		</Style>
 
+
+		<XamlUICommand x:Key="CopyValuesCommand" Label="Copy" ExecuteRequested="ImportListCopySelectedValues">
+			<XamlUICommand.KeyboardAccelerators>
+				<KeyboardAccelerator Modifiers="Control" Key="C"/>
+			</XamlUICommand.KeyboardAccelerators>
+		</XamlUICommand>
+
+
+		<MenuFlyout x:Name="ItemContextMenu" Opening="ItemContextMenu_Opening">
+			<MenuFlyoutItem Command="{StaticResource CopyValuesCommand}"/>
+			<MenuFlyoutItem Text="Copy function name" Command="{Binding CopyValue}" CommandParameter ="{Binding Name}"/>
+			<MenuFlyoutSeparator/>
+			<MenuFlyoutItem Text="Lookup Import function on MSDN" Command="{Binding QueryImportApi}" CommandParameter ="{Binding}"/>
+		</MenuFlyout>
+
+		<Style x:Name="DataGridRowStyleWithContextMenu" BasedOn="{StaticResource DataGridCompactRowStyle}" TargetType="toolkit:DataGridRow">
+			<Setter Property="toolkit:DataGridRow.ContextFlyout" Value="{StaticResource ItemContextMenu}"/>
+		</Style>
+
 	</local:DataGridSort.Resources>
 
 

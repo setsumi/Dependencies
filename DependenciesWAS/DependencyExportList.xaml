@@ -26,7 +26,7 @@
 
 		<XamlUICommand x:Key="CopyValuesCommand" Label="Copy" ExecuteRequested="ExportListCopySelectedValues">
 			<XamlUICommand.KeyboardAccelerators>
-				<KeyboardAccelerator Modifiers="Control" Key="C"/>
+				<KeyboardAccelerator Modifiers="Control" Key="C" ScopeOwner="{x:Bind}"/>
 			</XamlUICommand.KeyboardAccelerators>
 		</XamlUICommand>
 

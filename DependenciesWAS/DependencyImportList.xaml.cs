@@ -106,5 +106,10 @@ namespace Dependencies
 		}
 
 		public ObservableCollection<DisplayPeImport> Items = new ObservableCollection<DisplayPeImport>();
+
+		private void XamlUICommand_CanExecuteRequested(XamlUICommand sender, CanExecuteRequestedEventArgs args)
+		{
+			args.CanExecute = false;
+		}
 	}
 }

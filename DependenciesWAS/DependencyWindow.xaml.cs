@@ -1451,13 +1451,6 @@ namespace Dependencies
 			}
 		}
 #endregion // Commands 
-
-		private void TreeViewItem_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
-		{
-			TreeViewItem item = sender as TreeViewItem;
-			if (item != null)
-				item.IsExpanded = !item.IsExpanded;
-		}
 	}
 
 }

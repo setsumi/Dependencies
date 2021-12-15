@@ -514,6 +514,12 @@ namespace Dependencies
 			}
 		}
 
+		// Add the event handler here instead of the DependencyWindow class to avoid memory leaks
+		public void DoubleTappedEventHandler(object sender, DoubleTappedRoutedEventArgs e)
+		{
+			IsExpanded = !IsExpanded;
+		}
+
 		#endregion // Commands 
 
 		private RelayCommand _OpenPeviewerCommand;

@@ -19,7 +19,7 @@ namespace Dependencies
 	/// that returns a 32x32 or 16x16 System.Drawing.Icon depending on which function you call
 	/// either GetSmallIcon(string fileName) or GetLargeIcon(string fileName)
 	/// </summary>
-#if TODO
+#if REMOVED
 
     public static class ShellIcon
     {

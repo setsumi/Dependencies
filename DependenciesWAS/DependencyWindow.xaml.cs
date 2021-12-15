@@ -1,5 +1,6 @@
 ﻿using Dependencies;
 using Dependencies.ClrPh;
+using Dependencies.Toolkit.Uwp.Helpers;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -210,14 +211,14 @@ namespace Dependencies
 		{
 			_importsVerified = false;
 			_Parent = null;
-			Dependencies.Properties.Settings.Default.PropertyChanged += this.ModuleTreeViewItem_PropertyChanged;
+			RegisterPropertyChangedHandler();
 		}
 
 		public ModuleTreeViewItem(ModuleTreeViewItem Parent)
 		{
 			_importsVerified = false;
 			_Parent = Parent;
-			Dependencies.Properties.Settings.Default.PropertyChanged += this.ModuleTreeViewItem_PropertyChanged;
+			RegisterPropertyChangedHandler();
 		}
 
 		public ModuleTreeViewItem(ModuleTreeViewItem Other, ModuleTreeViewItem Parent)
@@ -225,7 +226,27 @@ namespace Dependencies
 			_importsVerified = false;
 			_Parent = Parent;
 			this.DataContext = new DependencyNodeContext((DependencyNodeContext)Other.DataContext);
-			Dependencies.Properties.Settings.Default.PropertyChanged += this.ModuleTreeViewItem_PropertyChanged;
+			RegisterPropertyChangedHandler();
+		}
+
+		~ModuleTreeViewItem()
+		{
+
+		}
+
+		void RegisterPropertyChangedHandler()
+		{
+			// Use weak event listener here to avoid memory leaks
+			WeakEventListener<ModuleTreeViewItem, object, PropertyChangedEventArgs> propertyChangedWeakEventListener =
+					   new WeakEventListener<ModuleTreeViewItem, object, PropertyChangedEventArgs>(this)
+					   {
+						   // Call the actual collection changed event
+						   OnEventAction = (source, changed, args) => source.ModuleTreeViewItem_PropertyChanged(source, args),
+
+						   // The source doesn't exist anymore
+						   OnDetachAction = (listener) => Dependencies.Properties.Settings.Default.PropertyChanged -= listener.OnEvent
+					   };// Use weak event listener here to avoid memory leaks
+			Dependencies.Properties.Settings.Default.PropertyChanged += propertyChangedWeakEventListener.OnEvent;
 		}
 
 		#region PropertyEventHandlers 

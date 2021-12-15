@@ -229,11 +229,6 @@ namespace Dependencies
 			RegisterPropertyChangedHandler();
 		}
 
-		~ModuleTreeViewItem()
-		{
-
-		}
-
 		void RegisterPropertyChangedHandler()
 		{
 			// Use weak event listener here to avoid memory leaks

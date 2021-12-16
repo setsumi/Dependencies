@@ -798,12 +798,10 @@ namespace Dependencies
 			}
 			catch (BadImageFormatException)
 			{
-#if TODO
                 MessageBoxResult result = MessageBox.Show(
                         String.Format("Cecil could not correctly parse {0:s}, which can happens on .NET Core executables. CLR imports will be not shown", AnalyzedPe.Filepath),
                         "CLR parsing fail"
                 );
-#endif
 				return;
 			}
 

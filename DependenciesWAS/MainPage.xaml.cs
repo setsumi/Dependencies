@@ -211,8 +211,7 @@ namespace Dependencies
 				{
 					if (item.IsOfType(StorageItemTypes.File))
 					{
-						// Note: Dropped files are read only. Disable linking files here for now.
-						e.AcceptedOperation = /*(e.Modifiers.HasFlag(DragDropModifiers.Alt) )  ? DataPackageOperation.Link : */DataPackageOperation.Copy;
+						e.AcceptedOperation = DataPackageOperation.Copy;
 						break;
 					}
 				}

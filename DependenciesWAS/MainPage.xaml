@@ -72,6 +72,10 @@
 		<TabView x:Name="FileTabs" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsAddTabButtonVisible="False" Padding="4,4,0,0" TabCloseRequested="FileTabs_TabCloseRequested" TabItemsChanged="FileTabs_TabItemsChanged" >
 			<TabView.Resources>
 				<CornerRadius x:Key="OverlayCornerRadius">0</CornerRadius> <!--TODO: Remove when rendering issue fixed -->
+				<StaticResource x:Key="TabViewItemHeaderBackground" ResourceKey="LayerOnAccentAcrylicFillColorDefault" />
+				<StaticResource x:Key="TabViewItemHeaderBackgroundPointerOver" ResourceKey="LayerFillColorDefaultBrush" />
+				<StaticResource x:Key="TabViewItemHeaderBackgroundPressed" ResourceKey="SolidBackgroundFillColorSecondaryBrush" />
+				<StaticResource x:Key="TabViewItemBorderBrush" ResourceKey="LayerOnAccentAcrylicFillColorDefault" />
 			</TabView.Resources>
 		</TabView>
 

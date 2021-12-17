@@ -30,21 +30,21 @@
 			<MenuBar.Items>
 				<MenuBarItem x:Name="FileMenu" Title="File" AccessKey="F">
 					<MenuBarItem.Items>
-						<MenuFlyoutItem x:Name="OpenItem" Text="Open" Click="OpenItem_Click">
+						<MenuFlyoutItem x:Name="OpenItem" Text="Open" Click="OpenItem_Click" AccessKey="O">
 							<MenuFlyoutItem.KeyboardAccelerators>
 								<KeyboardAccelerator Modifiers="Control" Key="O"/>
 							</MenuFlyoutItem.KeyboardAccelerators>
 						</MenuFlyoutItem>
 						<MenuFlyoutSubItem x:Name="RecentItems" Text="Recent files"/>
 						<MenuFlyoutSeparator/>
-						<MenuFlyoutItem x:Name="ExitItem" Text="Exit" Click="ExitItem_Click">
+						<MenuFlyoutItem x:Name="ExitItem" Text="Exit" Click="ExitItem_Click" AccessKey="X">
 							<MenuFlyoutItem.KeyboardAccelerators>
 								<KeyboardAccelerator Modifiers="Control" Key="Q"/>
 							</MenuFlyoutItem.KeyboardAccelerators>
 						</MenuFlyoutItem>
 					</MenuBarItem.Items>
 				</MenuBarItem>
-				<MenuBarItem Title="View" AccessKey="V" >
+				<MenuBarItem Title="View" AccessKey="V">
 					<MenuBarItem.Items>
 						<ToggleMenuFlyoutItem x:Name="FullPathItem" AccessKey="F" Text="Full Paths" IsChecked="{x:Bind FullPathSetting, Mode=TwoWay}">
 							<ToggleMenuFlyoutItem.KeyboardAccelerators>
@@ -60,8 +60,10 @@
 						<ToggleMenuFlyoutItem AccessKey="S" Text="Status Bar" IsChecked="{x:Bind ShowStatusBarSetting, Mode=TwoWay }"/>
 					</MenuBarItem.Items>
 				</MenuBarItem>
-				<MenuBarItem Title="Options">
-
+				<MenuBarItem Title="Options" AccessKey="O">
+					<MenuBarItem.Items>
+						<MenuFlyoutItem x:Name="UserSettingsItem" Text="Properties" AccessKey="P" Click="UserSettingsItem_Click"/>
+					</MenuBarItem.Items>
 				</MenuBarItem>
 			</MenuBar.Items>
 

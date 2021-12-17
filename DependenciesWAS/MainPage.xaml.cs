@@ -185,6 +185,18 @@ namespace Dependencies
 		{
 			MainWindow.GetWindow().Close();
 		}
+		private async void UserSettingsItem_Click(object sender, RoutedEventArgs e)
+		{
+			ContentDialog dialog = new ContentDialog()
+			{
+				Title = "Properties",
+				CloseButtonText = "Close",
+				Content = new UserSettings(),
+				XamlRoot = this.XamlRoot
+			};
+
+			await dialog.ShowAsync();
+		}
 
 		private void FileTabs_TabCloseRequested(TabView sender, TabViewTabCloseRequestedEventArgs args)
 		{
@@ -261,7 +273,5 @@ namespace Dependencies
 		bool ShowStatusBarSetting { get => Settings.Default.ShowStatusBar; set { Settings.Default.ShowStatusBar = value; OnPropertyChanged(); } }
 
 		ObservableCollection<RecentMenuItem> _recentsItems = new ObservableCollection<RecentMenuItem>();
-
-		
 	}
 }

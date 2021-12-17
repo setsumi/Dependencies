@@ -1182,7 +1182,11 @@ namespace Dependencies
 			if (SelectedModule.HasErrors)
 			{
 				// TODO : do a proper refresh instead of asking the user to do it
-                MessageBox.Show(String.Format("We could not find {0:s} file on the disk anymore, please fix this problem and refresh the window via F5", SelectedModule.Filepath));
+				DispatcherQueue.TryEnqueue(() =>
+				{
+					MessageBox.Show(String.Format("We could not find {0:s} file on the disk anymore, please fix this problem and refresh the window via F5", SelectedModule.Filepath));
+					return;
+				});
 			}
 
 			// Root Item : no parent

@@ -70,6 +70,13 @@ namespace Dependencies
 			this.InitializeComponent();
 
 			OpenNewDependencyWindow("coreclr.dll");
+
+			// Process command line args
+			string[] args = Environment.GetCommandLineArgs();
+			if (args.Length > 1)
+			{
+				OpenNewDependencyWindow(args[1]);
+			}
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;

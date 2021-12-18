@@ -71,7 +71,7 @@ namespace Dependencies
 
 			PopulateRecentFilesMenuItems();
 
-			//OpenNewDependencyWindow("coreclr.dll");
+			OpenNewDependencyWindow("coreclr.dll");
 
 			// Process command line args
 			string[] args = Environment.GetCommandLineArgs();

@@ -18,6 +18,7 @@
     <None Remove="DependencyExportList.xaml" />
     <None Remove="DependencyImportList.xaml" />
     <None Remove="DependencyWindow.xaml" />
+    <None Remove="FilterControl.xaml" />
     <None Remove="MainPage.xaml" />
     <None Remove="UserSettings.xaml" />
   </ItemGroup>
@@ -73,6 +74,9 @@
     <None Update="DependencyModuleList.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
+    <Page Update="FilterControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="Images\%29%29Dependencies.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

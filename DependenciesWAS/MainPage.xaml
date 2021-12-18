@@ -65,6 +65,12 @@
 						<MenuFlyoutItem x:Name="UserSettingsItem" Text="Properties" AccessKey="P" Click="UserSettingsItem_Click"/>
 					</MenuBarItem.Items>
 				</MenuBarItem>
+
+				<MenuBarItem Title="Help" AccessKey="H">
+					<MenuBarItem.Items>
+						<MenuFlyoutItem Text="About Dependencies" Click="AboutItem_Click"/>
+					</MenuBarItem.Items>
+				</MenuBarItem>
 			</MenuBar.Items>
 
 		</MenuBar>

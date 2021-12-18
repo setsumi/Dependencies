@@ -12,6 +12,7 @@
     <EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
 		<WindowsPackageType>None</WindowsPackageType>
 		<ApplicationIcon>Dependencies.ico</ApplicationIcon>
+		<Version>0.1</Version>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="DataGridCompactStyle.xaml" />

@@ -125,7 +125,6 @@
                        TextWrapping="Wrap"
                        VerticalAlignment="Center"
                        Name="TextContent"
-                       FontFamily="Courrier New"
                        FontSize="18"
                        Margin="20 0 0 00"
                        >

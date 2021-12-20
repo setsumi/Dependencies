@@ -142,8 +142,8 @@ namespace Dependencies
 
 				AddRecentFilesMenuItem(RecentFilePath, Properties.Settings.Default.RecentFiles.IndexOf(RecentFilePath));
 			}
+			RecentItems.IsEnabled = RecentItems.Items.Count > 0;
 			FileMenu.Items.Insert(index, RecentItems);
-
 		}
 
 

@@ -15,6 +15,8 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
+using Windows.Storage.Pickers;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -59,7 +61,7 @@ namespace Dependencies
 				);
 			}
 
-			_CustomSearchFolders.Add(
+			/*_CustomSearchFolders.Add(
 					new SearchFolderItem()
 					{
 						Folder = "Test folder"
@@ -70,8 +72,25 @@ namespace Dependencies
 					{
 						Folder = "Test folder 2"
 					}
-				);
+				);*/
 			this.InitializeComponent();
+		}
+
+		public void Save()
+		{
+			List<string> foldersList = _CustomSearchFolders.Select(i => i.Folder).ToList();
+
+			// do not launch analysis again if there is no modifications
+			bool searchFoldersChanged = (!_SelectedItem.CustomSearchFolders.SequenceEqual(foldersList) || (WorkingDirectory != _SelectedItem.WorkingDirectory));
+
+			if (searchFoldersChanged)
+			{
+				_SelectedItem.CustomSearchFolders = foldersList;
+				_SelectedItem.WorkingDirectory = WorkingDirectory;
+
+				// Force refresh
+				_SelectedItem.InitializeView();
+			}
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -79,9 +98,41 @@ namespace Dependencies
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
+		
+		private void RemoveCommand_ExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)
+		{
+			for (int i = SearchFolderList.SelectedItems.Count - 1; i >= 0; i--)
+			{
+				_CustomSearchFolders.RemoveAt(i);
+			}
+		}
+
+		private async void AddCommand_ExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)
+		{
+			FolderPicker folderPicker = new FolderPicker();
+
+			folderPicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+
+			WinRT.Interop.InitializeWithWindow.Initialize(folderPicker, MainWindow.GetWindowHandle());
+
+			StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+
+			if (folder == null)
+				return;
+
+			string folderPath = folder.Path;
+
+			// Do not add folder twice
+			foreach (SearchFolderItem item in _CustomSearchFolders)
+			{
+				if (item.Folder == folderPath)
+					return;
+			}
+
+			_CustomSearchFolders.Add(new SearchFolderItem() { Folder = folderPath });
+		}
 
 		public ObservableCollection<SearchFolderItem> SearchFolders => _CustomSearchFolders;
-	
 		public string WorkingDirectory
 		{
 			get { return _working_directory; }

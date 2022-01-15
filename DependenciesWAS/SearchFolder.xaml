@@ -9,12 +9,12 @@
 	Width="450">
 
 	<Page.Resources>
-		<XamlUICommand x:Name="AddCommand" Label="Add">
+		<XamlUICommand x:Name="AddCommand" Label="Add" ExecuteRequested="AddCommand_ExecuteRequested">
 			<XamlUICommand.IconSource>
 				<SymbolIconSource Symbol="Add"/>
 			</XamlUICommand.IconSource>
 		</XamlUICommand>
-		<XamlUICommand x:Name="RemoveCommand" Label="Remove">
+		<XamlUICommand x:Name="RemoveCommand" Label="Remove" ExecuteRequested="RemoveCommand_ExecuteRequested">
 			<XamlUICommand.IconSource>
 				<SymbolIconSource Symbol="Remove"/>
 			</XamlUICommand.IconSource>
@@ -37,7 +37,8 @@
 			<TextBox Grid.Column="1" x:Name="WorkingDirectoryTextBox" Text="{x:Bind WorkingDirectory, Mode=OneWay}"/>
 			<Button Grid.Column="2" Content="..."  VerticalAlignment="Stretch" />
 		</Grid>
-		<ListView Grid.Row="1" SelectionMode="Extended" ItemsSource="{x:Bind SearchFolders}" Background="{ThemeResource LayerFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1" CornerRadius="4">
+		<Border Grid.Row="1" BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1" CornerRadius="4"/>
+		<ListView x:Name="SearchFolderList" Grid.Row="1" SelectionMode="Extended" ItemsSource="{x:Bind SearchFolders}" Padding="0,4,0,4">
 			<ListView.ItemTemplate>
 				<DataTemplate x:DataType="local:SearchFolderItem">
 					<Grid>
@@ -46,7 +47,7 @@
 				</DataTemplate>
 			</ListView.ItemTemplate>
 		</ListView>
-		<TextBlock Grid.Row="1" x:Name="EmptyText" x:Load="{x:Bind IsEmptyTextVisible(SearchFolders.Count), Mode=OneWay}" TextWrapping="Wrap" VerticalAlignment="Center" Text="No custom search folder defined. Click the Add button or drag folders here."/>
+		<TextBlock Grid.Row="1" x:Name="EmptyText" x:Load="{x:Bind IsEmptyTextVisible(SearchFolders.Count), Mode=OneWay}" Padding="8" TextWrapping="Wrap" VerticalAlignment="Center" Text="No custom search folders defined. Click the Add button or drag folders here."/>
 		<CommandBar Grid.Row="2" OverflowButtonVisibility="Collapsed" DefaultLabelPosition="Right">
 			<AppBarButton Command="{x:Bind RemoveCommand}"/>
 			<AppBarButton Command="{x:Bind AddCommand}"/>

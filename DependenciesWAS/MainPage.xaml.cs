@@ -74,7 +74,7 @@ namespace Dependencies
 
 			PopulateRecentFilesMenuItems();
 
-			OpenNewDependencyWindow("coreclr.dll");
+			OpenNewDependencyWindow(Path.GetFullPath("coreclr.dll"));
 
 			// Process command line args
 			string[] args = Environment.GetCommandLineArgs();
@@ -208,12 +208,24 @@ namespace Dependencies
 			ContentDialog dialog = new ContentDialog()
 			{
 				Title = "Search folder",
-				CloseButtonText = "Close",
+				CloseButtonText = "Cancel",
+				PrimaryButtonText = "Ok",
+				DefaultButton = ContentDialogButton.Close,
 				Content = new SearchFolder(SelectedItem),
 				XamlRoot = this.XamlRoot
 			};
 
+			TypedEventHandler<ContentDialog, ContentDialogButtonClickEventArgs> OkHandler = (sender, args) => { (sender.Content as SearchFolder).Save(); };
+
+			dialog.PrimaryButtonClick += OkHandler;
 			await dialog.ShowAsync();
+			dialog.PrimaryButtonClick -= OkHandler;
+
+		}
+
+		private void Dialog_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+		{
+
 		}
 
 		private async void UserSettingsItem_Click(object sender, RoutedEventArgs e)

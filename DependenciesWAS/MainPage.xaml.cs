@@ -74,7 +74,7 @@ namespace Dependencies
 
 			PopulateRecentFilesMenuItems();
 
-			//OpenNewDependencyWindow("coreclr.dll");
+			OpenNewDependencyWindow("coreclr.dll");
 
 			// Process command line args
 			string[] args = Environment.GetCommandLineArgs();
@@ -199,6 +199,22 @@ namespace Dependencies
 
 			SelectedItem.InitializeView();
 		}
+		private async void CustomizeSearchFolderItem_Click(object sender, RoutedEventArgs e)
+		{
+			DependencyWindow SelectedItem = FileTabs.SelectedItem as DependencyWindow;
+			if (SelectedItem == null)
+				return;
+
+			ContentDialog dialog = new ContentDialog()
+			{
+				Title = "Search folder",
+				CloseButtonText = "Close",
+				Content = new SearchFolder(SelectedItem),
+				XamlRoot = this.XamlRoot
+			};
+
+			await dialog.ShowAsync();
+		}
 
 		private async void UserSettingsItem_Click(object sender, RoutedEventArgs e)
 		{
@@ -212,7 +228,6 @@ namespace Dependencies
 
 			await dialog.ShowAsync();
 		}
-
 
 		private async void AboutItem_Click(object sender, RoutedEventArgs e)
 		{

@@ -50,7 +50,7 @@ namespace Dependencies
 		public SearchFolder(DependencyWindow SelectedItem)
 		{
 			_SelectedItem = SelectedItem;
-			_working_directory = SelectedItem.RootFolder;
+			_working_directory = SelectedItem.WorkingDirectory; // TODO: Set to SelectedItem.RootDirectory in WPF version, but this seems wrong
 			_CustomSearchFolders = new ObservableCollection<SearchFolderItem>();
 			foreach (var item in SelectedItem.CustomSearchFolders)
 			{

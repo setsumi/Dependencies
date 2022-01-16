@@ -210,7 +210,7 @@ namespace Dependencies
 				Title = "Search folders",
 				CloseButtonText = "Cancel",
 				PrimaryButtonText = "Ok",
-				DefaultButton = ContentDialogButton.Close,
+				DefaultButton = ContentDialogButton.Primary,
 				Content = new SearchFolder(SelectedItem),
 				XamlRoot = this.XamlRoot
 			};
@@ -234,6 +234,7 @@ namespace Dependencies
 			{
 				Title = "Properties",
 				CloseButtonText = "Close",
+				DefaultButton = ContentDialogButton.Close,
 				Content = new UserSettings(),
 				XamlRoot = this.XamlRoot
 			};
@@ -262,6 +263,7 @@ namespace Dependencies
 			{
 				Title = "About",
 				CloseButtonText = "Close",
+				DefaultButton = ContentDialogButton.Close,
 				Content = text,
 				XamlRoot = this.XamlRoot
 			};

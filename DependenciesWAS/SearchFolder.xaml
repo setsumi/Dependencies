@@ -51,7 +51,7 @@
 		</ListView>
 		<TextBlock Grid.Row="2" x:Name="EmptyText" x:Load="{x:Bind IsEmptyTextVisible(SearchFolders.Count), Mode=OneWay}" Padding="8" TextWrapping="Wrap" IsHitTestVisible="False" VerticalAlignment="Center" Text="No custom search folders defined. Click the Add button or drag folders here."/>
 		<CommandBar Grid.Row="3" OverflowButtonVisibility="Collapsed" DefaultLabelPosition="Right">
-			<AppBarButton Command="{x:Bind RemoveCommand}"/>
+			<AppBarButton Command="{x:Bind RemoveCommand}" IsEnabled="{x:Bind IsItemSelected(SearchFolderList.SelectedIndex), Mode=OneWay}"/>
 			<AppBarButton Command="{x:Bind AddCommand}"/>
 		</CommandBar>
 	</Grid>

@@ -202,6 +202,7 @@ namespace Dependencies
 		}
 
 		public bool IsEmptyTextVisible(int count) => count == 0;
+		public bool IsItemSelected(int index) => index >= 0;
 		private DependencyWindow _SelectedItem;
 		private string _working_directory;
 		private ObservableCollection<SearchFolderItem> _CustomSearchFolders;

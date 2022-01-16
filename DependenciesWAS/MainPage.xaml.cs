@@ -207,7 +207,7 @@ namespace Dependencies
 
 			ContentDialog dialog = new ContentDialog()
 			{
-				Title = "Search folder",
+				Title = "Search folders",
 				CloseButtonText = "Cancel",
 				PrimaryButtonText = "Ok",
 				DefaultButton = ContentDialogButton.Close,

@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
@@ -93,12 +94,82 @@ namespace Dependencies
 			}
 		}
 
+		private void AddFolder(string folderPath)
+		{
+			// Do not add folder twice
+			foreach (SearchFolderItem item in _CustomSearchFolders)
+			{
+				if (item.Folder == folderPath)
+					return;
+			}
+
+			_CustomSearchFolders.Add(new SearchFolderItem() { Folder = folderPath });
+		}
+
 		public event PropertyChangedEventHandler PropertyChanged;
 		void OnPropertyChanged([CallerMemberName] string propertyName = null)
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
-		
+
+		private async void SearchFolderList_DragEnter(object sender, DragEventArgs e)
+		{
+			// Check if the drag contains storage items
+			if (e.DataView == null)
+				return;
+
+			if (!e.DataView.Contains(StandardDataFormats.StorageItems))
+				return;
+
+			// Get deferal
+			DragOperationDeferral deferal = e.GetDeferral();
+
+			e.AcceptedOperation = DataPackageOperation.None;
+
+			try
+			{
+				// Check that at least one folder is included
+				IReadOnlyList<IStorageItem> items = await e.DataView.GetStorageItemsAsync();
+				foreach (IStorageItem item in items)
+				{
+					if (item.IsOfType(StorageItemTypes.Folder))
+					{
+						e.AcceptedOperation = DataPackageOperation.Copy;
+						break;
+					}
+				}
+
+				// Complete operation
+				e.Handled = true;
+			}
+			catch (Exception)
+			{
+			}
+			deferal.Complete();
+		}
+
+		private async void SearchFolderList_Drop(object sender, DragEventArgs e)
+		{
+			e.AcceptedOperation = DataPackageOperation.Copy;
+			DragOperationDeferral deferal = e.GetDeferral();
+			e.Handled = true;
+			try
+			{
+				IReadOnlyList<IStorageItem> items = await e.DataView.GetStorageItemsAsync();
+				foreach (IStorageItem item in items)
+				{
+					if (item.IsOfType(StorageItemTypes.Folder))
+					{
+						AddFolder(item.Path);
+					}
+				}
+			}
+			catch (Exception)
+			{
+			}
+			deferal.Complete();
+		}
+
 		private void RemoveCommand_ExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)
 		{
 			for (int i = SearchFolderList.SelectedItems.Count - 1; i >= 0; i--)
@@ -120,16 +191,7 @@ namespace Dependencies
 			if (folder == null)
 				return;
 
-			string folderPath = folder.Path;
-
-			// Do not add folder twice
-			foreach (SearchFolderItem item in _CustomSearchFolders)
-			{
-				if (item.Folder == folderPath)
-					return;
-			}
-
-			_CustomSearchFolders.Add(new SearchFolderItem() { Folder = folderPath });
+			AddFolder(folder.Path);
 		}
 
 		public ObservableCollection<SearchFolderItem> SearchFolders => _CustomSearchFolders;

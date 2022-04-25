@@ -145,6 +145,11 @@ namespace Dependencies
 			}
 			RecentItems.IsEnabled = RecentItems.Items.Count > 0;
 			FileMenu.Items.Insert(index, RecentItems);
+
+			var flyout = new MenuFlyout();
+			flyout.Items.Add(RecentItems);
+			FileOpenButton.Flyout = flyout;
+
 		}
 
 

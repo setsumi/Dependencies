@@ -143,8 +143,14 @@ namespace Dependencies
 
 				AddRecentFilesMenuItem(RecentFilePath, Properties.Settings.Default.RecentFiles.IndexOf(RecentFilePath));
 			}
+			if(RecentItemsFlyout.Items.Count == 0)
+			{
+				MenuFlyoutItem dummyItem = new MenuFlyoutItem() { Style = RecentMenuItemStyle, Text = "No recent items" };
+				RecentItemsFlyout.Items.Add(dummyItem);
+			}
 			/*RecentItems.IsEnabled = RecentItems.Items.Count > 0;
 			FileMenu.Items.Insert(index, RecentItems);*/
+
 		}
 
 

@@ -42,8 +42,11 @@ namespace Dependencies
 				appWindow.TitleBar.ExtendsContentIntoTitleBar = true;
 				appWindow.TitleBar.ButtonBackgroundColor = Colors.Transparent;
 				appWindow.TitleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
-				RootPage.Margin = new Thickness(0, 28, 0, 0);
-				TitleBar.Visibility = Visibility.Visible;
+			}
+			else
+			{
+				this.ExtendsContentIntoTitleBar = true;
+				SetTitleBar(TitleBar);
 			}
 			appWindow.SetIcon("Dependencies.ico");
 		}

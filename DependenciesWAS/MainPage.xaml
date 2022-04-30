@@ -8,15 +8,18 @@
     mc:Ignorable="d">
 
 	<Page.Resources>
-		<Style x:Name="RecentMenuItemStyle" TargetType="MenuFlyoutItem">
-			<Setter Target="Template">
+		<Style x:Name="RecentMenuItemStyle" TargetType="MenuFlyoutItem" BasedOn="{StaticResource DefaultMenuFlyoutItemStyle}">
+			<Setter Property="Padding" Value="{StaticResource MenuFlyoutItemThemePaddingNarrow}"/>
+			<Setter Property="FontSize" Value="12"/>
+			<!--<Setter Target="Template">
 				<Setter.Value>
 					<ControlTemplate TargetType="MenuFlyoutItem">
 						<MenuFlyoutItem Text="{Binding HeaderTitle}" FontSize="12" Padding="{StaticResource MenuFlyoutItemThemePaddingNarrow}" Click="RecentItem_Click"/>
 					</ControlTemplate>
 				</Setter.Value>
-			</Setter>
+			</Setter>-->
 		</Style>
+
 	</Page.Resources>
 
 	<Grid AllowDrop="True" DragEnter="RootGrid_DragEnter" Drop="RootGrid_Drop">
@@ -26,8 +29,8 @@
 			<RowDefinition Height="*"/>
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
-		<MenuBar Padding="4,0,0,0">
-			
+		<!--<MenuBar Padding="4,0,0,0">
+
 			<MenuBar.Items>
 				<MenuBarItem x:Name="FileMenu" Title="File" AccessKey="F">
 					<MenuBarItem.Items>
@@ -69,9 +72,9 @@
 				</MenuBarItem>
 				<MenuBarItem Title="Options" AccessKey="O">
 					<MenuBarItem.Items>
-						<MenuFlyoutItem x:Name="CustomizeSearchFoldersItem" Text="Customize search folders" AccessKey="C" IsEnabled="False" Click="CustomizeSearchFolderItem_Click"/>
+						<MenuFlyoutItem x:Name="CustomizeSearchFoldersItemFlyout" Text="Customize search folders" AccessKey="C" IsEnabled="False" Click="CustomizeSearchFolderItem_Click"/>
 						<MenuFlyoutSeparator/>
-						<MenuFlyoutItem x:Name="UserSettingsItem" Text="Properties" AccessKey="P" Click="UserSettingsItem_Click"/>
+						<MenuFlyoutItem Text="Properties" AccessKey="P" Click="UserSettingsItem_Click"/>
 					</MenuBarItem.Items>
 				</MenuBarItem>
 
@@ -82,11 +85,11 @@
 				</MenuBarItem>
 			</MenuBar.Items>
 
-		</MenuBar>
+		</MenuBar>-->
 
-		<CommandBar Grid.Row="1" DefaultLabelPosition="Right">
+		<CommandBar Grid.Row="1" DefaultLabelPosition="Right" HorizontalAlignment="Left">
 			<AppBarElementContainer>
-				<SplitButton x:Name="FileOpenButton" Style="{ThemeResource SplitButtonCommandBarStyle}">
+				<SplitButton x:Name="FileOpenButton" Style="{ThemeResource SplitButtonCommandBarStyle}" Click="OpenItem_Click" AccessKey="O">
 					<StackPanel Orientation="Horizontal">
 						<Viewbox x:Name="ContentViewbox"
                                 Height="{ThemeResource AppBarButtonContentHeight}"
@@ -103,11 +106,11 @@
 								   Text="Open"/>
 					</StackPanel>
 					<SplitButton.Flyout>
-						<MenuBarItemFlyout x:Name="RecentItemsFlyout"/>
+						<MenuFlyout x:Name="RecentItemsFlyout"/>
 					</SplitButton.Flyout>
 				</SplitButton>
 			</AppBarElementContainer>
-			<AppBarButton Icon="View" Label="View">
+			<AppBarButton Icon="View" Label="View" AccessKey="V">
 				<AppBarButton.Flyout>
 					<MenuFlyout Placement="Bottom">
 						<ToggleMenuFlyoutItem AccessKey="F" Text="Full Paths" IsChecked="{x:Bind FullPathSetting, Mode=TwoWay}">
@@ -121,7 +124,7 @@
 							</ToggleMenuFlyoutItem.KeyboardAccelerators>
 						</ToggleMenuFlyoutItem>
 						<MenuFlyoutSeparator/>
-						<MenuFlyoutItem AccessKey="R" Text="Refresh" IsEnabled="False" Click="RefreshItem_Click">
+						<MenuFlyoutItem x:Name="RefreshItem" AccessKey="R" Text="Refresh" IsEnabled="False" Click="RefreshItem_Click">
 							<MenuFlyoutItem.KeyboardAccelerators>
 								<KeyboardAccelerator Modifiers="None" Key="F5"/>
 							</MenuFlyoutItem.KeyboardAccelerators>
@@ -131,6 +134,11 @@
 					</MenuFlyout>
 				</AppBarButton.Flyout>
 			</AppBarButton>
+			<AppBarButton x:Name="CustomizeSearchFoldersItem" Icon="Find" Label="Search Folders" AccessKey="C" IsEnabled="True" Click="CustomizeSearchFolderItem_Click"/>
+			<CommandBar.SecondaryCommands>
+				<AppBarButton Icon="Setting" Label="Properties" AccessKey="P" Click="CustomizeSearchFolderItem_Click"/>
+				<AppBarButton Icon="Help" Label="About Dependencies" AccessKey="H" Click="AboutItem_Click"/>
+			</CommandBar.SecondaryCommands>
 		</CommandBar>
 
 		<Grid Grid.Row="2" Background="{ThemeResource ControlAltFillColorQuarternary}" BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="0,1,0,0"/>

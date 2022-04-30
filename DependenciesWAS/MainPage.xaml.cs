@@ -120,14 +120,14 @@ namespace Dependencies
 		public void PopulateRecentFilesMenuItems()
 		{
 			// TODO: Find a few to update the recent menu without rebuilding it
-			int index = FileMenu.Items.IndexOf(RecentItems);
+			/*int index = FileMenu.Items.IndexOf(RecentItems);
 			FileMenu.Items.Remove(RecentItems);
-
+			*/
 			RecentItemsFlyout.Items.Clear();
-
+			/*
 			RecentItems = new MenuFlyoutSubItem() { Text = "Recent Items" };
 			var o = App.Current.Resources["FlyoutThemeMaxWidth"];
-
+			*/
 			if (Properties.Settings.Default.RecentFiles.Count == 0)
 			{
 				return;
@@ -143,19 +143,28 @@ namespace Dependencies
 
 				AddRecentFilesMenuItem(RecentFilePath, Properties.Settings.Default.RecentFiles.IndexOf(RecentFilePath));
 			}
-			RecentItems.IsEnabled = RecentItems.Items.Count > 0;
-			FileMenu.Items.Insert(index, RecentItems);
+			/*RecentItems.IsEnabled = RecentItems.Items.Count > 0;
+			FileMenu.Items.Insert(index, RecentItems);*/
 		}
 
 
 		private void AddRecentFilesMenuItem(string Filepath, int index)
 		{
-			RecentItems.Items.Add(new MenuFlyoutItem() { DataContext = new RecentMenuItem(Filepath), Style = RecentMenuItemStyle });
-			RecentItemsFlyout.Items.Add(new MenuFlyoutItem() { DataContext = new RecentMenuItem(Filepath), Style = RecentMenuItemStyle });
+			//RecentItems.Items.Add(new MenuFlyoutItem() { DataContext = new RecentMenuItem(Filepath), Style = RecentMenuItemStyle });
+			RecentMenuItem item = new RecentMenuItem(Filepath);
+			Binding textBinding = new Binding();
+			textBinding.Source = item;
+			textBinding.Path = new PropertyPath(nameof(item.HeaderTitle));
+			textBinding.Mode = BindingMode.OneWay;
+			MenuFlyoutItem menuItem = new MenuFlyoutItem() { DataContext = item, Style = RecentMenuItemStyle };
+			menuItem.SetBinding(MenuFlyoutItem.TextProperty, textBinding);
+			menuItem.Click += RecentItem_Click;
+			RecentItemsFlyout.Items.Add(menuItem);
+
 			//_recentsItems.Add(new RecentMenuItem(Filepath));
 		}
 
-		private async void OpenItem_Click(object sender, RoutedEventArgs e)
+		private async void OpenItem_Click(SplitButton sender, SplitButtonClickEventArgs e)
 		{
 			FileOpenPicker loadPicker = new FileOpenPicker();
 
@@ -184,8 +193,8 @@ namespace Dependencies
 			}
 
 			// TODO: Remove this once there is way to bind a list of MenuFlyoutItems
-			IExpandCollapseProvider provider = MenuBarItemAutomationPeer.FromElement(FileMenu) as IExpandCollapseProvider;
-			provider.Collapse();
+			/*IExpandCollapseProvider provider = MenuBarItemAutomationPeer.FromElement(FileMenu) as IExpandCollapseProvider;
+			provider.Collapse();*/
 		}
 
 		private void ExitItem_Click(object sender, RoutedEventArgs e)

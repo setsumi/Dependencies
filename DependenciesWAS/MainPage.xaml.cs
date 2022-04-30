@@ -103,9 +103,9 @@ namespace Dependencies
 		/// <param name="Filename">File path to a PE to process.</param>
 		public async void OpenNewDependencyWindow(String Filename)
 		{
-			var newDependencyWindow = new DependencyWindow(Filename);
+			DependencyWindow newDependencyWindow = new DependencyWindow(Filename);
 			newDependencyWindow.Header = Path.GetFileNameWithoutExtension(Filename);
-
+			newDependencyWindow.Tag = Filename;
 			FileTabs.TabItems.Add(newDependencyWindow);
 			FileTabs.SelectedItem = newDependencyWindow;
 
@@ -336,6 +336,56 @@ namespace Dependencies
 			{
 			}
 			deferal.Complete();
+		}
+
+		private void FileTabs_TabStripDragOver(object sender, DragEventArgs e)
+		{
+			e.AcceptedOperation = DataPackageOperation.None;
+
+			if (e.DataView.Contains(StandardDataFormats.ApplicationLink))
+			{
+				e.Handled = true;
+				e.AcceptedOperation = DataPackageOperation.Link;
+			}
+		}
+
+		private async void FileTabs_TabStripDrop(object sender, DragEventArgs e)
+		{
+			e.AcceptedOperation = DataPackageOperation.None;
+
+			if (!e.DataView.Contains(StandardDataFormats.ApplicationLink))
+				return;
+
+			DragOperationDeferral deferal = e.GetDeferral();
+
+			try
+			{
+				Uri file = await e.DataView.GetApplicationLinkAsync();
+				OpenNewDependencyWindow(file.AbsolutePath);
+				// Complete operation
+				e.Handled = true;
+			}
+			catch (Exception)
+			{
+			}
+
+			deferal.Complete();
+
+		}
+
+		private void FileTabs_TabDragStarting(TabView sender, TabViewTabDragStartingEventArgs args)
+		{
+			try
+			{
+				DependencyWindow window = args.Tab as DependencyWindow;
+				args.Data.SetApplicationLink(new Uri(window.Tag.ToString(), UriKind.Absolute));
+				args.Data.RequestedOperation = DataPackageOperation.Link;
+				args.Data.Properties.ApplicationName = "Dependencies";
+			}
+			catch(Exception)
+			{
+
+			}
 		}
 
 		public string VersionStr { get => Assembly.GetEntryAssembly().GetName().Version.ToString(); }

@@ -412,6 +412,15 @@ namespace Dependencies
 			}
 		}
 
+		private void FileTabs_TabDragCompleted(TabView sender, TabViewTabDragCompletedEventArgs args)
+		{
+			if (args.DropResult != DataPackageOperation.Move)
+				return;
+
+			// Remove tab if dragged to another window
+			FileTabs.TabItems.Remove(args.Tab);
+		}
+
 		public string VersionStr { get => Assembly.GetEntryAssembly().GetName().Version.ToString(); }
 
 		bool FullPathSetting { get => Settings.Default.FullPath; set { Settings.Default.FullPath = value; OnPropertyChanged(); } }

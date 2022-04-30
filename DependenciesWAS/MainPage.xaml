@@ -134,9 +134,9 @@
 					</MenuFlyout>
 				</AppBarButton.Flyout>
 			</AppBarButton>
-			<AppBarButton x:Name="CustomizeSearchFoldersItem" Icon="Find" Label="Search Folders" AccessKey="C" IsEnabled="True" Click="CustomizeSearchFolderItem_Click"/>
+			<AppBarButton x:Name="CustomizeSearchFoldersItem" Icon="Find" Label="Customize search folders" AccessKey="C" IsEnabled="True" Click="CustomizeSearchFolderItem_Click"/>
 			<CommandBar.SecondaryCommands>
-				<AppBarButton Icon="Setting" Label="Properties" AccessKey="P" Click="CustomizeSearchFolderItem_Click"/>
+				<AppBarButton Icon="Setting" Label="Properties" AccessKey="P" Click="UserSettingsItem_Click"/>
 				<AppBarButton Icon="Help" Label="About Dependencies" AccessKey="H" Click="AboutItem_Click"/>
 			</CommandBar.SecondaryCommands>
 		</CommandBar>

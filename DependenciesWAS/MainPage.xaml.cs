@@ -123,7 +123,7 @@ namespace Dependencies
 			int index = FileMenu.Items.IndexOf(RecentItems);
 			FileMenu.Items.Remove(RecentItems);
 
-
+			RecentItemsFlyout.Items.Clear();
 
 			RecentItems = new MenuFlyoutSubItem() { Text = "Recent Items" };
 			var o = App.Current.Resources["FlyoutThemeMaxWidth"];
@@ -145,17 +145,13 @@ namespace Dependencies
 			}
 			RecentItems.IsEnabled = RecentItems.Items.Count > 0;
 			FileMenu.Items.Insert(index, RecentItems);
-
-			var flyout = new MenuFlyout();
-			flyout.Items.Add(RecentItems);
-			FileOpenButton.Flyout = flyout;
-
 		}
 
 
 		private void AddRecentFilesMenuItem(string Filepath, int index)
 		{
 			RecentItems.Items.Add(new MenuFlyoutItem() { DataContext = new RecentMenuItem(Filepath), Style = RecentMenuItemStyle });
+			RecentItemsFlyout.Items.Add(new MenuFlyoutItem() { DataContext = new RecentMenuItem(Filepath), Style = RecentMenuItemStyle });
 			//_recentsItems.Add(new RecentMenuItem(Filepath));
 		}
 

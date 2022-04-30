@@ -102,6 +102,9 @@
                                 AutomationProperties.AccessibilityView="Raw"
 								   Text="Open"/>
 					</StackPanel>
+					<SplitButton.Flyout>
+						<MenuBarItemFlyout x:Name="RecentItemsFlyout"/>
+					</SplitButton.Flyout>
 				</SplitButton>
 			</AppBarElementContainer>
 			<AppBarButton Icon="View" Label="View">

@@ -330,7 +330,7 @@ namespace Dependencies
 			deferal.Complete();
 		}
 
-		private async void RootGrid_Drop(object sender, DragEventArgs e)
+		private async void RootGridOrFileTabs_Drop(object sender, DragEventArgs e)
 		{
 			DragOperationDeferral deferal = e.GetDeferral();
 			e.Handled = true;
@@ -372,28 +372,6 @@ namespace Dependencies
 				e.Handled = true;
 				e.AcceptedOperation = DataPackageOperation.Move;
 			}
-		}
-
-		private async void FileTabs_TabStripDrop(object sender, DragEventArgs e)
-		{
-			if (!e.DataView.Contains(StandardDataFormats.ApplicationLink))
-				return;
-
-			DragOperationDeferral deferal = e.GetDeferral();
-
-			try
-			{
-				Uri file = await e.DataView.GetApplicationLinkAsync();
-				OpenNewDependencyWindow(file.AbsolutePath);
-				// Complete operation
-				e.Handled = true;
-			}
-			catch (Exception)
-			{
-			}
-
-			deferal.Complete();
-
 		}
 
 		private void FileTabs_TabDragStarting(TabView sender, TabViewTabDragStartingEventArgs args)

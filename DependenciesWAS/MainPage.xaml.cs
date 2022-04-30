@@ -120,14 +120,8 @@ namespace Dependencies
 		public void PopulateRecentFilesMenuItems()
 		{
 			// TODO: Find a few to update the recent menu without rebuilding it
-			/*int index = FileMenu.Items.IndexOf(RecentItems);
-			FileMenu.Items.Remove(RecentItems);
-			*/
 			RecentItemsFlyout.Items.Clear();
-			/*
-			RecentItems = new MenuFlyoutSubItem() { Text = "Recent Items" };
-			var o = App.Current.Resources["FlyoutThemeMaxWidth"];
-			*/
+			
 			if (Properties.Settings.Default.RecentFiles.Count == 0)
 			{
 				return;
@@ -148,15 +142,11 @@ namespace Dependencies
 				MenuFlyoutItem dummyItem = new MenuFlyoutItem() { Style = RecentMenuItemStyle, Text = "No recent items" };
 				RecentItemsFlyout.Items.Add(dummyItem);
 			}
-			/*RecentItems.IsEnabled = RecentItems.Items.Count > 0;
-			FileMenu.Items.Insert(index, RecentItems);*/
-
 		}
 
 
 		private void AddRecentFilesMenuItem(string Filepath, int index)
 		{
-			//RecentItems.Items.Add(new MenuFlyoutItem() { DataContext = new RecentMenuItem(Filepath), Style = RecentMenuItemStyle });
 			RecentMenuItem item = new RecentMenuItem(Filepath);
 			Binding textBinding = new Binding();
 			textBinding.Source = item;
@@ -166,8 +156,6 @@ namespace Dependencies
 			menuItem.SetBinding(MenuFlyoutItem.TextProperty, textBinding);
 			menuItem.Click += RecentItem_Click;
 			RecentItemsFlyout.Items.Add(menuItem);
-
-			//_recentsItems.Add(new RecentMenuItem(Filepath));
 		}
 
 		private async void OpenItem_Click(SplitButton sender, SplitButtonClickEventArgs e)
@@ -197,10 +185,6 @@ namespace Dependencies
 			{
 				OpenNewDependencyWindow(RecentFilePath);
 			}
-
-			// TODO: Remove this once there is way to bind a list of MenuFlyoutItems
-			/*IExpandCollapseProvider provider = MenuBarItemAutomationPeer.FromElement(FileMenu) as IExpandCollapseProvider;
-			provider.Collapse();*/
 		}
 
 		private void ExitItem_Click(object sender, RoutedEventArgs e)
@@ -237,11 +221,6 @@ namespace Dependencies
 			dialog.PrimaryButtonClick += OkHandler;
 			await dialog.ShowAsync();
 			dialog.PrimaryButtonClick -= OkHandler;
-
-		}
-
-		private void Dialog_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
-		{
 
 		}
 

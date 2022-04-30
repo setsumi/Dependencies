@@ -121,7 +121,7 @@ namespace Dependencies
 		{
 			// TODO: Find a few to update the recent menu without rebuilding it
 			RecentItemsFlyout.Items.Clear();
-			
+
 			if (Properties.Settings.Default.RecentFiles.Count == 0)
 			{
 				return;
@@ -137,7 +137,7 @@ namespace Dependencies
 
 				AddRecentFilesMenuItem(RecentFilePath, Properties.Settings.Default.RecentFiles.IndexOf(RecentFilePath));
 			}
-			if(RecentItemsFlyout.Items.Count == 0)
+			if (RecentItemsFlyout.Items.Count == 0)
 			{
 				MenuFlyoutItem dummyItem = new MenuFlyoutItem() { Style = RecentMenuItemStyle, Text = "No recent items" };
 				RecentItemsFlyout.Items.Add(dummyItem);
@@ -280,31 +280,47 @@ namespace Dependencies
 
 		private async void RootGrid_DragEnter(object sender, DragEventArgs e)
 		{
+			e.AcceptedOperation = DataPackageOperation.None;
+
 			// Check if the drag contains storage items
 			if (e.DataView == null)
 				return;
 
-			if (!e.DataView.Contains(StandardDataFormats.StorageItems))
+			if (!e.DataView.Contains(StandardDataFormats.StorageItems) && !e.DataView.Contains(StandardDataFormats.ApplicationLink))
 				return;
+
+			if (e.DataView.Properties.ContainsKey("windowHandle"))
+			{
+				// Make sure not to accept drops from the same window
+				Int64 handle = (Int64)e.DataView.Properties["windowHandle"];
+				if ((Int64)MainWindow.GetWindowHandle() == handle)
+					return;
+			}
 
 			// Get deferal
 			DragOperationDeferral deferal = e.GetDeferral();
 
-			e.AcceptedOperation = DataPackageOperation.None;
-
 			try
 			{
 				// Check that at least one file is included
-				IReadOnlyList<IStorageItem> files = await e.DataView.GetStorageItemsAsync();
-				foreach (IStorageItem item in files)
+				if (e.DataView.Contains(StandardDataFormats.StorageItems))
 				{
-					if (item.IsOfType(StorageItemTypes.File))
+					IReadOnlyList<IStorageItem> files = await e.DataView.GetStorageItemsAsync();
+					foreach (IStorageItem item in files)
 					{
-						e.AcceptedOperation = DataPackageOperation.Copy;
-						break;
+						if (item.IsOfType(StorageItemTypes.File))
+						{
+							e.AcceptedOperation = DataPackageOperation.Copy;
+							break;
+						}
 					}
 				}
-
+				else
+				{
+					Uri file = await e.DataView.GetApplicationLinkAsync();
+					if(file.IsFile)
+						e.AcceptedOperation = DataPackageOperation.Move;
+				}
 				// Complete operation
 				e.Handled = true;
 			}
@@ -316,21 +332,30 @@ namespace Dependencies
 
 		private async void RootGrid_Drop(object sender, DragEventArgs e)
 		{
-			e.AcceptedOperation = DataPackageOperation.Copy;
 			DragOperationDeferral deferal = e.GetDeferral();
 			e.Handled = true;
 			try
 			{
-				IReadOnlyList<IStorageItem> files = await e.DataView.GetStorageItemsAsync();
-				foreach (IStorageItem item in files)
+				if (e.DataView.Contains(StandardDataFormats.StorageItems))
 				{
-					if (item.IsOfType(StorageItemTypes.File))
+					IReadOnlyList<IStorageItem> files = await e.DataView.GetStorageItemsAsync();
+					foreach (IStorageItem item in files)
 					{
-						deferal.Complete();
-						OpenNewDependencyWindow(item.Path);
-						return;
+						if (item.IsOfType(StorageItemTypes.File))
+						{
+							deferal.Complete();
+							OpenNewDependencyWindow(item.Path);
+							return;
+						}
 					}
 				}
+				else
+				{
+					Uri file = await e.DataView.GetApplicationLinkAsync();
+					OpenNewDependencyWindow(file.AbsolutePath);
+				}
+				// Complete operation
+				e.Handled = true;
 			}
 			catch (Exception)
 			{
@@ -345,14 +370,12 @@ namespace Dependencies
 			if (e.DataView.Contains(StandardDataFormats.ApplicationLink))
 			{
 				e.Handled = true;
-				e.AcceptedOperation = DataPackageOperation.Link;
+				e.AcceptedOperation = DataPackageOperation.Move;
 			}
 		}
 
 		private async void FileTabs_TabStripDrop(object sender, DragEventArgs e)
 		{
-			e.AcceptedOperation = DataPackageOperation.None;
-
 			if (!e.DataView.Contains(StandardDataFormats.ApplicationLink))
 				return;
 
@@ -379,10 +402,11 @@ namespace Dependencies
 			{
 				DependencyWindow window = args.Tab as DependencyWindow;
 				args.Data.SetApplicationLink(new Uri(window.Tag.ToString(), UriKind.Absolute));
-				args.Data.RequestedOperation = DataPackageOperation.Link;
+				args.Data.RequestedOperation = DataPackageOperation.Move;
 				args.Data.Properties.ApplicationName = "Dependencies";
+				args.Data.Properties.Add("windowHandle", (Int64)MainWindow.GetWindowHandle());
 			}
-			catch(Exception)
+			catch (Exception)
 			{
 
 			}

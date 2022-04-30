@@ -414,11 +414,15 @@ namespace Dependencies
 
 		private void FileTabs_TabDragCompleted(TabView sender, TabViewTabDragCompletedEventArgs args)
 		{
+			// There does not currently seem to be a way to detect if the drop target is the same window or 
+			// tabs are reordered in the same window
+			return;
+			/*
 			if (args.DropResult != DataPackageOperation.Move)
 				return;
 
 			// Remove tab if dragged to another window
-			FileTabs.TabItems.Remove(args.Tab);
+			FileTabs.TabItems.Remove(args.Tab);*/
 		}
 
 		public string VersionStr { get => Assembly.GetEntryAssembly().GetName().Version.ToString(); }

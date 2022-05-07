@@ -18,6 +18,12 @@
 		<IntermediateOutputPath>$(SolutionDir)obj\$(ProjectName)\$(Configuration)$(Platform)</IntermediateOutputPath>
 		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Packaged'">
+		<DefineConstants>$(DefineConstants);RELEASE;TRACE</DefineConstants>
+		<DebugSymbols>false</DebugSymbols>
+		<DebugType>portable</DebugType>
+		<Optimize>true</Optimize>
+	</PropertyGroup>
 
 
 	<ItemGroup>

@@ -11,13 +11,6 @@
 		<Style x:Name="RecentMenuItemStyle" TargetType="MenuFlyoutItem" BasedOn="{StaticResource DefaultMenuFlyoutItemStyle}">
 			<Setter Property="Padding" Value="{StaticResource MenuFlyoutItemThemePaddingNarrow}"/>
 			<Setter Property="FontSize" Value="12"/>
-			<!--<Setter Target="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="MenuFlyoutItem">
-						<MenuFlyoutItem Text="{Binding HeaderTitle}" FontSize="12" Padding="{StaticResource MenuFlyoutItemThemePaddingNarrow}" Click="RecentItem_Click"/>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>-->
 		</Style>
 
 	</Page.Resources>

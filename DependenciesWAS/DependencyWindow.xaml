@@ -40,7 +40,7 @@
 			<TreeView x:Name="DllTreeView" Margin="0,4,0,0"
                     HorizontalContentAlignment="Stretch" 
                     VerticalContentAlignment="Stretch" 
-                    Padding="0" Expanding="DllTreeView_Expanding" ItemInvoked="DllTreeView_ItemInvoked">
+                    Padding="0" Expanding="DllTreeView_Expanding" ItemInvoked="DllTreeView_ItemInvoked" CanReorderItems="False" CanDragItems="False">
 				<TreeView.Resources>
 
 					<MenuFlyout x:Name="TreeItemContextMenu">

@@ -72,6 +72,7 @@ namespace Dependencies
 		{
 			this.InitializeComponent();
 
+
 			PopulateRecentFilesMenuItems();
 
 #if DEBUG
@@ -161,7 +162,13 @@ namespace Dependencies
 			RecentItemsFlyout.Items.Add(menuItem);
 		}
 
-		private async void OpenItem_Click(SplitButton sender, SplitButtonClickEventArgs e)
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            // HACK to work around XAML reentrancy crash
+            DispatcherQueue.TryEnqueue(() => { AppStatusBar.IsOpen = true; });
+        }
+
+        private async void OpenItem_Click(SplitButton sender, SplitButtonClickEventArgs e)
 		{
 			FileOpenPicker loadPicker = new FileOpenPicker();
 
@@ -437,5 +444,5 @@ namespace Dependencies
 		bool ShowStatusBarSetting { get => Settings.Default.ShowStatusBar; set { Settings.Default.ShowStatusBar = value; OnPropertyChanged(); } }
 
 		ObservableCollection<RecentMenuItem> _recentsItems = new ObservableCollection<RecentMenuItem>();
-	}
+    }
 }

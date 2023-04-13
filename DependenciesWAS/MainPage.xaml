@@ -5,7 +5,8 @@
     xmlns:local="using:Dependencies"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+	Loaded="Page_Loaded">
 
 	<Page.Resources>
 		<Style x:Name="RecentMenuItemStyle" TargetType="MenuFlyoutItem" BasedOn="{StaticResource DefaultMenuFlyoutItemStyle}">
@@ -116,7 +117,7 @@
                    Grid.Row="2" 
                    MinHeight="20" 
                    Margin="0" 
-                   VerticalAlignment="Bottom" IsClosable="False" IsOpen="True" Height="24" IsIconVisible="False" CornerRadius="0" BorderThickness="0,1,0,0" Background="{ThemeResource LayerFillColorDefaultBrush}"
+                   VerticalAlignment="Bottom" IsClosable="False" Height="24" IsIconVisible="False" CornerRadius="0" BorderThickness="0,1,0,0" Background="{ThemeResource LayerFillColorDefaultBrush}"
 				   Visibility="{x:Bind ShowStatusBarSetting, Mode=OneWay}">
 			<InfoBar.Message>
 				"Welcome to Dependencies !"

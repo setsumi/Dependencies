@@ -40,10 +40,10 @@ namespace Dependencies
 			}
 			appWindow.SetIcon("Dependencies.ico");
 
-			TrySetMicaBackdrop();
-		}
+            this.SystemBackdrop = new MicaBackdrop();
+        }
 
-		private void Window_Closed(object sender, WindowEventArgs args)
+        private void Window_Closed(object sender, WindowEventArgs args)
 		{
 			(App.Current as App).AppExit();
 		}
@@ -72,17 +72,6 @@ namespace Dependencies
 		public void OpenNewTab(string filepath)
 		{
 			RootPage.OpenNewDependencyWindow(filepath);
-		}
-
-		bool TrySetMicaBackdrop()
-		{
-			if (Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported())
-			{
-				this.SystemBackdrop = new MicaBackdrop();
-				RootGrid.Background = null;
-				return true; // succeeded
-			}
-			return false; // Mica is not supported on this system
 		}
 
 		private static MainWindow _mainWindow;

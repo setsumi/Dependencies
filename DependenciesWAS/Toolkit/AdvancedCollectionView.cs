@@ -17,6 +17,7 @@ using Microsoft.UI.Xaml.Data;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Dependencies.Toolkit.Uwp.UI;
+using Windows.Gaming.Preview.GamesEnumeration;
 
 namespace Dependencies.Toolkit.Uwp.UI
 {
@@ -378,8 +379,28 @@ namespace Dependencies.Toolkit.Uwp.UI
         /// <returns>Comparison value</returns>
         int IComparer<object>.Compare(object x, object y)
         {
-            var type = x.GetType();
-            var type2 = y.GetType();
+            if (!_sortProperties.Any())
+            {
+                var listType = _source?.GetType();
+                Type type;
+
+                if (listType != null && listType.IsGenericType)
+                {
+                    type = listType.GetGenericArguments()[0];
+                }
+                else
+                {
+                    type = x.GetType();
+                }
+
+                foreach (var sd in _sortDescriptions)
+                {
+                    if (!string.IsNullOrEmpty(sd.PropertyName))
+                    {
+                        _sortProperties[sd.PropertyName] = type.GetProperty(sd.PropertyName);
+                    }
+                }
+            }
 
             foreach (var sd in _sortDescriptions)
             {
@@ -392,11 +413,10 @@ namespace Dependencies.Toolkit.Uwp.UI
                 }
                 else
                 {
-                    var pi = type.GetProperty(sd.PropertyName);
-                    var pi2 = type2.GetProperty(sd.PropertyName);
+                    var pi = _sortProperties[sd.PropertyName];
 
                     cx = pi.GetValue(x);
-                    cy = pi2.GetValue(y);
+                    cy = pi.GetValue(y);
                 }
 
                 var cmp = sd.Comparer.Compare(cx, cy);

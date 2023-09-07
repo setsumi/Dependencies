@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.WinUI;
+﻿using CommunityToolkit.WinUI.Collections;
 using Dependencies.Properties;
 using Microsoft.Graphics.Canvas.Text;
 using Microsoft.UI.Text;

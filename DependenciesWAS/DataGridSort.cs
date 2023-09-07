@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.WinUI;
+﻿using CommunityToolkit.WinUI.Collections;
 using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -103,7 +103,7 @@ namespace Dependencies
 		}
 
 		private Popup _filterPopup = null;
-		protected CommunityToolkit.WinUI.AdvancedCollectionView SortedItems;
+		protected CommunityToolkit.WinUI.Collections.AdvancedCollectionView SortedItems;
 
 	}
 }

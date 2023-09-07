@@ -84,7 +84,7 @@ namespace Dependencies
 
 		public DependencyModuleList()
 		{
-			SortedItems = new CommunityToolkit.WinUI.AdvancedCollectionView(Items, true);
+			SortedItems = new CommunityToolkit.WinUI.Collections.AdvancedCollectionView(Items, true);
 			this.InitializeComponent();
 			this.RowStyle = DataGridRowStyleWithContextMenu;
 		}

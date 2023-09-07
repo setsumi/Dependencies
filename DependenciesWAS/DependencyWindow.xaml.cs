@@ -588,7 +588,6 @@ namespace Dependencies
 
 			// TODO : Find a way to properly bind commands instead of using this hack
 			this.ModulesList.Items.Clear();
-            //this.ModulesList.Items.Add(new NotFoundModuleInfo("Test"));
             this.ModulesList.DoFindModuleInTreeCommand = DoFindModuleInTree;
 			this.ModulesList.ConfigureSearchOrderCommand = ConfigureSearchOrderCommand;
 

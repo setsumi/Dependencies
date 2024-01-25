@@ -171,6 +171,7 @@ namespace Dependencies
 			FolderPicker folderPicker = new FolderPicker();
 
 			folderPicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+			folderPicker.FileTypeFilter.Add("*");
 
 			WinRT.Interop.InitializeWithWindow.Initialize(folderPicker, MainWindow.GetWindowHandle());
 

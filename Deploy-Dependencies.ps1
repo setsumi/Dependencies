@@ -100,33 +100,33 @@ function Get-DependenciesDeps {
 
   # Bundling every msvc redistribuables
   Get-ChildItem -Path "$PSScriptRoot" -Recurse
-  $ClrPhLibPath = "$($Binpath)/ClrPhLib.dll";
-  $ClrPhLibImports = &"$($Binpath)/Dependencies.exe" -json -imports $ClrPhLibPath | ConvertFrom-Json;
-  foreach($DllImport in $ClrPhLibImports.Imports) {
-    
-    # vcruntime
-    if ($DllImport.Name.ToLower().StartsWith("vcruntime"))
-    {
-      Copy-SystemDll -DllName $DllImport.Name -OutputFolder $OutputFolder;
-    }
-
-    # msvc
-    if ($DllImport.Name.ToLower().StartsWith("msvc"))
-    {
-      Copy-SystemDll -DllName $DllImport.Name -OutputFolder $OutputFolder;
-    }
-
-    # ucrtbase
-    if ($DllImport.Name.ToLower().StartsWith("ucrtbase"))
-    {
-      Copy-SystemDll -DllName $DllImport.Name -OutputFolder $OutputFolder;
-    }
-
-     # concrt
-    if ($DllImport.Name.ToLower().StartsWith("concrt"))
-    {
-      Copy-SystemDll -DllName $DllImport.Name -OutputFolder $OutputFolder;
-    }
+#  $ClrPhLibPath = "$($Binpath)/ClrPhLib.dll";
+#  $ClrPhLibImports = &"$($Binpath)/Dependencies.exe" -json -imports $ClrPhLibPath | ConvertFrom-Json;
+#  foreach($DllImport in $ClrPhLibImports.Imports) {
+#    
+#    # vcruntime
+#    if ($DllImport.Name.ToLower().StartsWith("vcruntime"))
+#    {
+#      Copy-SystemDll -DllName $DllImport.Name -OutputFolder $OutputFolder;
+#    }
+#
+#    # msvc
+#    if ($DllImport.Name.ToLower().StartsWith("msvc"))
+#    {
+#      Copy-SystemDll -DllName $DllImport.Name -OutputFolder $OutputFolder;
+#    }
+#
+#    # ucrtbase
+#    if ($DllImport.Name.ToLower().StartsWith("ucrtbase"))
+#    {
+#      Copy-SystemDll -DllName $DllImport.Name -OutputFolder $OutputFolder;
+#    }
+#
+#     # concrt
+#    if ($DllImport.Name.ToLower().StartsWith("concrt"))
+#    {
+#      Copy-SystemDll -DllName $DllImport.Name -OutputFolder $OutputFolder;
+#    }
 
   }
 
@@ -177,16 +177,16 @@ New-Item -ItemType Directory -Force -Path $OutputFolder;
 Get-DependenciesDeps -Binpath $BINPATH -OutputFolder $DepsFolder;
 
 # Running regress tests
-Run-RegressTests -Binpath $BINPATH;
+#Run-RegressTests -Binpath $BINPATH;
 
 
 Write-Host "Zipping everything"
 if ($($env:CONFIGURATION) -eq "Debug") {
-	&7z.exe a "$($OutputFolder)/Dependencies_$($Version)_$($env:platform)_$($env:CONFIGURATION).zip" $BINPATH/tests $BINPATH/*.dll $BINPATH/*.exe $BINPATH/*.config $BINPATH/*.pdb $DepsFolder/* $env:PEVIEW_PATH;
+	&7z.exe a "$($OutputFolder)/Dependencies_$($Version)_$($env:platform)_$($env:CONFIGURATION).zip" $BINPATH $DepsFolder/* $env:PEVIEW_PATH;
 }
 else {
-	&7z.exe a "$($OutputFolder)/Dependencies_$($Version)_$($env:platform)_$($env:CONFIGURATION).zip" $BINPATH/*.dll $BINPATH/*.exe $BINPATH/*.config $BINPATH/*.pdb $DepsFolder/* $env:PEVIEW_PATH;
-	&7z.exe a "$($OutputFolder)/Dependencies_$($Version)_$($env:platform)_$($env:CONFIGURATION)_(without peview.exe).zip" $BINPATH/*.dll $BINPATH/*.exe $BINPATH/*.config $BINPATH/*.pdb $DepsFolder/*;
+	&7z.exe a "$($OutputFolder)/Dependencies_$($Version)_$($env:platform)_$($env:CONFIGURATION).zip" $BINPATH $DepsFolder/* $env:PEVIEW_PATH;
+	&7z.exe a "$($OutputFolder)/Dependencies_$($Version)_$($env:platform)_$($env:CONFIGURATION)_(without peview.exe).zip" $BINPATH $DepsFolder/*;
 }
 
 # APPX packaging

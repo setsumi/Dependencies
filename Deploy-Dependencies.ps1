@@ -99,6 +99,7 @@ function Get-DependenciesDeps {
   Copy-SystemDll -DllName "dbghelp.dll" -OutputFolder $OutputFolder;
 
   # Bundling every msvc redistribuables
+  Get-ChildItem -Path "$PSScriptRoot" -Recurse
   $ClrPhLibPath = "$($Binpath)/ClrPhLib.dll";
   $ClrPhLibImports = &"$($Binpath)/Dependencies.exe" -json -imports $ClrPhLibPath | ConvertFrom-Json;
   foreach($DllImport in $ClrPhLibImports.Imports) {

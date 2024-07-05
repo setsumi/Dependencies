@@ -127,8 +127,8 @@ function Get-DependenciesDeps {
 #    {
 #      Copy-SystemDll -DllName $DllImport.Name -OutputFolder $OutputFolder;
 #    }
-
-  }
+#
+#  }
 
   # Packaging universal CRT on Release builds
   if ($($env:CONFIGURATION) -eq "Release") {
